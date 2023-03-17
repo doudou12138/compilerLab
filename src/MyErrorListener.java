@@ -12,7 +12,11 @@ public class MyErrorListener extends BaseErrorListener {
     }
 
     public boolean hasError(){
-        return hasError;
+        if(hasError){
+            hasError=false;
+            return true;
+        }
+        return false;
     }
 
 }
