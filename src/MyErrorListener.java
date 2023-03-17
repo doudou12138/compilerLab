@@ -2,21 +2,17 @@ import org.antlr.v4.runtime.BaseErrorListener;
 
 
 public class MyErrorListener extends BaseErrorListener {
-    private boolean hasError = false;
+    private boolean has_Error = false;
     @Override
     public void syntaxError(org.antlr.v4.runtime.Recognizer<?,?> recognizer, java.lang.Object offendingSymbol, int line,
                             int charPositionInLine, java.lang.String msg, org.antlr.v4.runtime.RecognitionException e) {
         /* compiled code */
-        hasError=true;
+        has_Error=true;
         System.err.println("Error type A at Line "+line+":"+" "+msg+".");
     }
 
     public boolean hasError(){
-        if(hasError){
-            hasError=false;
-            return true;
-        }
-        return false;
+        return has_Error;
     }
 
 }
