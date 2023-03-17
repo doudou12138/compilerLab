@@ -15,4 +15,8 @@ public class MyErrorListener extends BaseErrorListener {
         return has_Error;
     }
 
+    public void changeStatu(boolean a){
+        has_Error = a;
+    }
+
 }

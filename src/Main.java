@@ -12,11 +12,15 @@ public class Main {
         CharStream input = CharStreams.fromFileName(source);
         SysYLexer sysYLexer = new SysYLexer(input);
 
-        //MyErrorListener myErrorListener=new MyErrorListener();
-        //sysYLexer.removeErrorListeners();
-        //sysYLexer.addErrorListener(myErrorListener);
+        MyErrorListener myErrorListener=new MyErrorListener();
+        sysYLexer.removeErrorListeners();
+        sysYLexer.addErrorListener(myErrorListener);
 
         List<? extends Token> tokens = sysYLexer.getAllTokens();
+        if(myErrorListener.hasError()){
+            myErrorListener.changeStatu(false);
+            return;
+        }
         for (Token i : tokens) {
             int type_n = i.getType();
             if (type_n == 34) {
