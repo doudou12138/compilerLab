@@ -3,8 +3,10 @@ int main()
    // line comment
    /*
      block comment
-   */
+   */~
    int 2i = 0x1;
-   itn a= 032;
+   itn a= 032;!
+   err m = ~;
    string b=38;
+   //slieng
 }

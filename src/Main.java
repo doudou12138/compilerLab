@@ -17,9 +17,6 @@ public class Main {
         sysYLexer.addErrorListener(myErrorListener);
 
         List<? extends Token> tokens = sysYLexer.getAllTokens();
-        if(myErrorListener.hasError()){
-            return;
-        }
         for (Token i : tokens) {
             int type_n = i.getType();
             if (type_n == 34) {
