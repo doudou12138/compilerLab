@@ -73,7 +73,7 @@ WS : [ \r\n\t]+ ->skip;
 
 LINE_COMMENT : '//' .*? '\n' ->skip;
 
-MULTILINE_COMMENT : '/*' .*? '*/';
+MULTILINE_COMMENT : '/*' .*? '*/' ->skip;
 
 fragment DIGIT:[0-9];
 fragment LETTER:[A-Za-z];
