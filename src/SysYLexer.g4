@@ -1,4 +1,5 @@
 lexer grammar SysYLexer;
+
 CONST : 'const';
 
 INT : 'int';
@@ -65,8 +66,7 @@ SEMICOLON : ';';
 
 IDENT : ('_'|LETTER)(DIGIT|LETTER|'_')*;//以下划线或字母开头，仅包含下划线、英文字母大小写、阿拉伯数字
 
-INTEGER_CONST : '0'|[1-9]DIGIT*|'0'(('X'|'x')('0'|[1-9A-Fa-f](DIGIT|[A-Fa-f])*)|('0'|[1-7][0-7]*));//数字常量，包含十进制数，0开头的八进制数，0x或0X开头的十六进制数
-
+INTEGER_CONST : '0'|[1-9]DIGIT*|'0'(('X'|'x')('0'|[1-9a-fA-F](DIGIT|[a-fA-F])*)|('0'|[1-7][0-7]*));//数字常量，包含十进制数，0开头的八进制数，0x或0X开头的十六进制数
 
 
 WS : [ \r\n\t]+ ->skip;
@@ -76,4 +76,4 @@ LINE_COMMENT : '//' .*? '\n' ->skip;
 MULTILINE_COMMENT : '/*' .*? '*/' ->skip;
 
 fragment DIGIT:[0-9];
-fragment LETTER:[A-Za-z];
+fragment LETTER:[a-zA-Z];
