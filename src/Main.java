@@ -13,6 +13,7 @@ public class Main
         CharStream input = CharStreams.fromFileName(source);
         SysYLexer sysYLexer = new SysYLexer(input);
 
+        MyErrorListener myErrorListener = new MyErrorListener();
 
         sysYLexer.removeErrorListeners();
         sysYLexer.addErrorListener(myErrorListener);
