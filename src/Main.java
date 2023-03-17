@@ -12,6 +12,10 @@ public class Main
         String source = args[0];
         CharStream input = CharStreams.fromFileName(source);
         SysYLexer sysYLexer = new SysYLexer(input);
+
+
+        sysYLexer.removeErrorListeners();
+        sysYLexer.addErrorListener(myErrorListener);
         List<? extends Token> tokens = sysYLexer.getAllTokens();
         for(Token i:tokens) {
             int type_n = i.getType();
