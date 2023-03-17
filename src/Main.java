@@ -26,10 +26,14 @@ public class Main {
                 if (type_n == 34) {
                     String tokenText = i.getText();
                     if (tokenText.charAt(0) == '0') {
-                        if ((tokenText.charAt(1) - 'x' == 0) || (tokenText.charAt(1) - 'X' == 0)) {
-                            tokenText = String.valueOf(Integer.parseInt(tokenText.substring(2), 16));
+                        if (tokenText.length() == 1) {
+                            tokenText = "0";
                         } else {
-                            tokenText = String.valueOf(Integer.parseInt(tokenText.substring(1), 8));
+                            if ((tokenText.charAt(1) - 'x' == 0) || (tokenText.charAt(1) - 'X' == 0)) {
+                                tokenText = String.valueOf(Integer.parseInt(tokenText.substring(2), 16));
+                            } else {
+                                tokenText = String.valueOf(Integer.parseInt(tokenText.substring(1), 8));
+                            }
                         }
                     }
                     System.err.println(SysYLexer.ruleNames[type_n - 1] + " " + tokenText + " at Line " + i.getLine() + ".");
