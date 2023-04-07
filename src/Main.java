@@ -13,13 +13,14 @@ public class Main {
         CharStream input = CharStreams.fromFileName(source);
         SysYLexer sysYLexer = new SysYLexer(input);
 
-        MyErrorListener myErrorListener = new MyErrorListener();
+        LexerErrorListener myLexerErrorListener = new LexerErrorListener();
+        ParseErrorListener myParseErrorListener = new ParseErrorListener();
         sysYLexer.removeErrorListeners();
-        sysYLexer.addErrorListener(myErrorListener);
+        sysYLexer.addErrorListener(myLexerErrorListener);
 
         List<? extends Token> tokens = sysYLexer.getAllTokens();
-        if (myErrorListener.hasError()) {
-            myErrorListener.changeStatu(false);
+        if (myLexerErrorListener.hasError()) {
+            myLexerErrorListener.changeStatu(false);
         } else {
             for (Token i : tokens) {
                 int type_n = i.getType();

@@ -1,7 +1,7 @@
 import org.antlr.v4.runtime.BaseErrorListener;
 
 
-public class MyErrorListener extends BaseErrorListener {
+public class LexerErrorListener extends BaseErrorListener {
     private boolean has_Error = false;
     @Override
     public void syntaxError(org.antlr.v4.runtime.Recognizer<?,?> recognizer, java.lang.Object offendingSymbol, int line,
