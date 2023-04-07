@@ -21,7 +21,7 @@ public class Main {
         sysYLexer.addErrorListener(myLexerErrorListener);
 
 
-        //List<? extends Token> tokens = sysYLexer.getAllTokens();
+
         CommonTokenStream tokenStream = new CommonTokenStream(sysYLexer);
         SysYParser sysYParser = new SysYParser(tokenStream);
 
@@ -58,11 +58,10 @@ public class Main {
             if (myParseErrorListener.hasError()) {
                 myParseErrorListener.changeStatu(false);
             } else {
+
                 ParseTree tree = sysYParser.program();
                 Visitor visitor = new Visitor();
                 visitor.visit(tree);
-
-
             }
         }
     }
