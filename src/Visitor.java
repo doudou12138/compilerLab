@@ -10,7 +10,6 @@ public class Visitor extends SysYParserBaseVisitor{
     public Object visitChildren(RuleNode node){
         // result = this.defaultResult();
 
-        ws_nums+=ws_num;
 
         Object result = this.defaultResult();
         int n = node.getChildCount();
@@ -18,6 +17,7 @@ public class Visitor extends SysYParserBaseVisitor{
         if(n==0){
             visitTerminal((TerminalNode) node);
         }else{
+            ws_nums+=ws_num;
             for(int i=0;i<ws_nums;i++){
                 System.err.print(" ");
             }
@@ -29,20 +29,21 @@ public class Visitor extends SysYParserBaseVisitor{
                 Object childResult = c.accept(this);
                 result = this.aggregateResult(result, childResult);
             }
+            ws_nums-=ws_num;
         }
 
-        ws_nums-=ws_num;
         return result;
     }
 
     @Override
     public Object visitTerminal(TerminalNode node){
+        ws_nums+=ws_num;
         Object result = this.defaultResult();
 
         int a = node.getSymbol().getType();
         String text = node.getSymbol().getText();
         show_terminal(a,text);
-
+        ws_nums-=ws_num;
         return result;
     }
 
@@ -54,12 +55,21 @@ public class Visitor extends SysYParserBaseVisitor{
         for(int i=0;i<ws_nums;++i){
             System.err.print(" ");
         }
-        System.err.print(text+" "+SysYLexer.ruleNames[a-1]);
-        if(a>=0&&a<9){System.err.println("[orange]");}
-        if(a>=9&&a<25){System.err.println("[blue]");}
+        if(a==34){
+            System.err.println(Utils.toDecimal(text)+" "+SysYLexer.ruleNames[a-1]+"[green]");
+        }else {
+            System.err.print(text + " " + SysYLexer.ruleNames[a - 1]);
+            if (a >= 0 && a < 9) {
+                System.err.println("[orange]");
+            }
+            if (a >= 9 && a < 25) {
+                System.err.println("[blue]");
+            }
 
-        if(a==33){System.err.println("[red]");}
-        if(a==34){System.err.println("[green]");}
+            if (a == 33) {
+                System.err.println("[red]");
+            }
+        }
 
     }
 

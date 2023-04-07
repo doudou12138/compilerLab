@@ -16,18 +16,16 @@ public class Main {
         SysYLexer sysYLexer = new SysYLexer(input);
 
         LexerErrorListener myLexerErrorListener = new LexerErrorListener();
-        ParseErrorListener myParseErrorListener = new ParseErrorListener();
         sysYLexer.removeErrorListeners();
         sysYLexer.addErrorListener(myLexerErrorListener);
-
 
 
         CommonTokenStream tokenStream = new CommonTokenStream(sysYLexer);
         SysYParser sysYParser = new SysYParser(tokenStream);
 
+        ParseErrorListener myParseErrorListener = new ParseErrorListener();
         sysYParser.removeErrorListeners();
         sysYParser.addErrorListener(myParseErrorListener);
-
 
         if (false) {
             //if(myLexerErrorListener.hasError())
@@ -37,17 +35,7 @@ public class Main {
                 int type_n = i.getType();
                 if (type_n == 34) {
                     String tokenText = i.getText();
-                    if (tokenText.charAt(0) == '0') {
-                        if (tokenText.length() == 1) {
-                            tokenText = "0";
-                        } else {
-                            if ((tokenText.charAt(1) - 'x' == 0) || (tokenText.charAt(1) - 'X' == 0)) {
-                                tokenText = String.valueOf(Integer.parseInt(tokenText.substring(2), 16));
-                            } else {
-                                tokenText = String.valueOf(Integer.parseInt(tokenText.substring(1), 8));
-                            }
-                        }
-                    }
+                    tokenText = String.valueOf(tokenText);
                     //System.err.println(SysYLexer.ruleNames[type_n - 1] + " " + tokenText + " at Line " + i.getLine() + ".");
                 } else {
                     //System.err.println(SysYLexer.ruleNames[type_n - 1] + " " + i.getText() + " at Line " + i.getLine() + ".");
@@ -55,14 +43,15 @@ public class Main {
             }
 
             // 如果有语法错误，输出错误信息
+            ParseTree tree = sysYParser.program();
             if (myParseErrorListener.hasError()) {
                 myParseErrorListener.changeStatu(false);
             } else {
-
-                ParseTree tree = sysYParser.program();
                 Visitor visitor = new Visitor();
                 visitor.visit(tree);
             }
+
+
         }
     }
 

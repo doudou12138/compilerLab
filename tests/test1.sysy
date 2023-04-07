@@ -1,9 +1,5 @@
-int main(){
-    int a[6];
+int main() {
+    int a=0;
     return a;
+    int b=0x18;
 }
-
-
-
-
-
