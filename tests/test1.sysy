@@ -1,5 +1,4 @@
-int main() {
-    int a=0;
-    return a;
-    int b=00;
+int main(){
+    int a[];
+    return a][;
 }

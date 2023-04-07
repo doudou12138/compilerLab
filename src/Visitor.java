@@ -51,7 +51,7 @@ public class Visitor extends SysYParserBaseVisitor{
 
         if(a>=25&&a<33){return;}
         if(a>=35&&a<39){return;}
-        if(a>=38||a<0){return;}
+        if(a>=39||a<0){return;}
         for(int i=0;i<ws_nums;++i){
             System.err.print(" ");
         }
@@ -59,10 +59,10 @@ public class Visitor extends SysYParserBaseVisitor{
             System.err.println(Utils.toDecimal(text)+" "+SysYLexer.ruleNames[a-1]+"[green]");
         }else {
             System.err.print(text + " " + SysYLexer.ruleNames[a - 1]);
-            if (a >= 0 && a < 9) {
+            if (a >= 0 && a < 10) {
                 System.err.println("[orange]");
             }
-            if (a >= 9 && a < 25) {
+            if (a >= 10 && a < 25) {
                 System.err.println("[blue]");
             }
 
