@@ -22,6 +22,7 @@ public class Main {
         List<? extends Token> tokens = sysYLexer.getAllTokens();
 
         if (false) {
+            //if(myLexerErrorListener.hasError())
             myLexerErrorListener.changeStatu(false);
         } else {
             for (Token i : tokens) {
