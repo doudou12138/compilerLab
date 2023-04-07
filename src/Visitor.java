@@ -47,7 +47,7 @@ public class Visitor extends SysYParserBaseVisitor{
     }
 
     public void show_terminal(int a,String text){
-ak
+
         if(a>=25&&a<33){return;}
         if(a>=35&&a<39){return;}
         if(a>=38||a<0){return;}
