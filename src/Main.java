@@ -1,4 +1,6 @@
+import org.antlr.runtime.tree.TreeWizard;
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,13 +21,19 @@ public class Main {
         sysYLexer.addErrorListener(myLexerErrorListener);
 
 
-        List<? extends Token> tokens = sysYLexer.getAllTokens();
+        //List<? extends Token> tokens = sysYLexer.getAllTokens();
+        CommonTokenStream tokenStream = new CommonTokenStream(sysYLexer);
+        SysYParser sysYParser = new SysYParser(tokenStream);
+
+        sysYParser.removeErrorListeners();
+        sysYParser.addErrorListener(myParseErrorListener);
+
 
         if (false) {
             //if(myLexerErrorListener.hasError())
             myLexerErrorListener.changeStatu(false);
         } else {
-            for (Token i : tokens) {
+            for (Token i : tokenStream.getTokens()) {
                 int type_n = i.getType();
                 if (type_n == 34) {
                     String tokenText = i.getText();
@@ -46,20 +54,16 @@ public class Main {
                 }
             }
 
-            CommonTokenStream tokenStream = new CommonTokenStream(new ListTokenSource(tokens));
-            SysYParser sysYParser = new SysYParser(tokenStream);
-            sysYParser.removeErrorListeners();
-            sysYParser.addErrorListener(myParseErrorListener);
-
-            SysYParser.ProgramContext prog = sysYParser.program();
             // 如果有语法错误，输出错误信息
             if (myParseErrorListener.hasError()) {
                 myParseErrorListener.changeStatu(false);
             } else {
-                System.err.println("yeyeye");
+                ParseTree tree = sysYParser.program();
+                Visitor visitor = new Visitor();
+                visitor.visit(tree);
+
+
             }
-
-
         }
     }
 
