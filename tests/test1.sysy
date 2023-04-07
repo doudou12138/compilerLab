@@ -1,6 +1,4 @@
 int main(){
-    int a[int];
-    return a;
+    int a[6];
+    return a][;
 }
-
-void

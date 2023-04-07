@@ -18,6 +18,7 @@ public class Main {
         sysYLexer.removeErrorListeners();
         sysYLexer.addErrorListener(myLexerErrorListener);
 
+
         List<? extends Token> tokens = sysYLexer.getAllTokens();
 
         if (myLexerErrorListener.hasError()) {
@@ -38,14 +39,13 @@ public class Main {
                             }
                         }
                     }
-                    System.err.println(SysYLexer.ruleNames[type_n - 1] + " " + tokenText + " at Line " + i.getLine() + ".");
+                    //System.err.println(SysYLexer.ruleNames[type_n - 1] + " " + tokenText + " at Line " + i.getLine() + ".");
                 } else {
-                    System.err.println(SysYLexer.ruleNames[type_n - 1] + " " + i.getText() + " at Line " + i.getLine() + ".");
+                    //System.err.println(SysYLexer.ruleNames[type_n - 1] + " " + i.getText() + " at Line " + i.getLine() + ".");
                 }
             }
 
-
-            CommonTokenStream tokenStream = new CommonTokenStream(sysYLexer);
+            CommonTokenStream tokenStream = new CommonTokenStream(new ListTokenSource(tokens));
             SysYParser sysYParser = new SysYParser(tokenStream);
             sysYParser.removeErrorListeners();
             sysYParser.addErrorListener(myParseErrorListener);
@@ -57,6 +57,7 @@ public class Main {
             } else {
                 System.err.println("yeyeye");
             }
+
 
         }
     }
