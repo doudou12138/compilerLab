@@ -19,6 +19,7 @@ public class Main {
         sysYLexer.addErrorListener(myLexerErrorListener);
 
         List<? extends Token> tokens = sysYLexer.getAllTokens();
+
         if (myLexerErrorListener.hasError()) {
             myLexerErrorListener.changeStatu(false);
         } else {
@@ -42,6 +43,22 @@ public class Main {
                     System.err.println(SysYLexer.ruleNames[type_n - 1] + " " + i.getText() + " at Line " + i.getLine() + ".");
                 }
             }
+
+
+            CommonTokenStream tokenStream = new CommonTokenStream(sysYLexer);
+            SysYParser sysYParser = new SysYParser(tokenStream);
+            sysYParser.removeErrorListeners();
+            sysYParser.addErrorListener(myParseErrorListener);
+
+            SysYParser.ProgramContext prog = sysYParser.program();
+            // 如果有语法错误，输出错误信息
+            if (myParseErrorListener.hasError()) {
+                myParseErrorListener.changeStatu(false);
+            } else {
+                System.err.println("yeyeye");
+            }
+
         }
     }
+
 }

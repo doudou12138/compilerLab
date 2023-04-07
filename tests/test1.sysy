@@ -1,6 +1,6 @@
-hello 1948
-17471
-int a
-;
-iqitn
-/* */
+int main(){
+    int a[int];
+    return a;
+}
+
+void
