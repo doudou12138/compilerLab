@@ -26,7 +26,8 @@ constInitVal : constExp| L_BRACE (constInitVal( COMMA constInitVal)*)? R_BRACE;
 varDecl: bType varDef( COMMA varDef)* SEMICOLON;
 
 varDef : IDENT(L_BRACKT constExp R_BRACKT)*
-        | IDENT { L_BRACKT constExp R_BRACKT } ASSIGN initVal;
+        | IDENT ( L_BRACKT constExp R_BRACKT )* ASSIGN initVal;
+
 initVal : exp | L_BRACE (initVal( COMMA initVal)*)? R_BRACE;
 
 funcDef : funcType IDENT L_PAREN (funcFParams)? R_PAREN block;
