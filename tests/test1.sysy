@@ -2,6 +2,10 @@ int a(int m,int m) {
     return 10;
 }
 
+int a(int m){
+    return b;
+}
+
 int main() {
     const int m[1]=1;
     b(c);

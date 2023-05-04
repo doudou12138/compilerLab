@@ -416,7 +416,7 @@ public class ErrorVisitor extends SysYParserBaseVisitor{
             Object offendingSymbol = token.getText();
             String msg = "4 redefined function name";
             parseErrorListener.syntaxError(null, offendingSymbol, line, charPositionInLine, msg, null);
-            //return result;
+            return result;
         }else{
             symbolTable.enterScope();
             retype=new BasicType(ctx.funcType().getText());
