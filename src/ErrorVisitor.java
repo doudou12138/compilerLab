@@ -280,12 +280,18 @@ public class ErrorVisitor extends SysYParserBaseVisitor{
                 }else if(parasType==null^((FunctionType) entry.getType()).getParameterTypes()==null){
 
                 }else if(((FunctionType) entry.getType()).getParameterTypes().size()==parasType.size()){
-                    for(int i=0;i<parasType.size();++i){
-                        if(!((FunctionType) entry.getType()).getParameterTypes().get(i).equals(parasType.get(i))){
-                            break;
+                    {
+                        boolean same=true;
+                        for (int i = 0; i < parasType.size(); ++i) {
+                            if (!((FunctionType) entry.getType()).getParameterTypes().get(i).toString().equals(parasType.get(i).toString())) {
+                                same=false;
+                                break;
+                            }
+                        }
+                        if(same){
+                            parasMis=false;
                         }
                     }
-                    parasMis=false;
                 }
                 if(parasMis){
                     Token token = ctx.IDENT().getSymbol();
@@ -449,11 +455,11 @@ public class ErrorVisitor extends SysYParserBaseVisitor{
 
     @Override
     public Object visitFuncRParams(SysYParser.FuncRParamsContext ctx){
-        ArrayList<Type> parasTYpe = new ArrayList<>();
+        ArrayList<Type> parasType = new ArrayList<>();
         for(int i=0;i<ctx.param().size();++i){
-            parasTYpe.add((Type) visitParam(ctx.param(i)));
+            parasType.add((Type) visitParam(ctx.param(i)));
         }
-        return parasTYpe;
+        return parasType;
     }
 
     public Object visitParam(SysYParser.ParamContext ctx){
