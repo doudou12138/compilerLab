@@ -6,11 +6,10 @@ public class Visitor extends SysYParserBaseVisitor{
     static int ws_nums = -2;
     static int ws_num = 2;
 
+
     @Override
     public Object visitChildren(RuleNode node){
         // result = this.defaultResult();
-
-
         Object result = this.defaultResult();
         int n = node.getChildCount();
 

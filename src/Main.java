@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.List;
 
 public class Main {
+    SymbolTable symbolTable=new SymbolTable();
+
     public static void main(String[] args) throws IOException {
         if (args.length < 1) {
             System.err.println("input path is required");
@@ -44,14 +46,22 @@ public class Main {
 
             // 如果有语法错误，输出错误信息
             ParseTree tree = sysYParser.program();
-            if (myParseErrorListener.hasError()) {
+            if (false) {
+                //if(myParseErrorListener.hasError())
                 myParseErrorListener.changeStatu(false);
             } else {
-                Visitor visitor = new Visitor();
-                visitor.visit(tree);
+                myParseErrorListener.setMean();
+                SymbolTable symbolTable=new SymbolTable();
+                ErrorVisitor errorVisitor = new ErrorVisitor(symbolTable,myParseErrorListener);
+                errorVisitor.visit(tree);
+
+                if(myParseErrorListener.hasError()){
+                    myParseErrorListener.changeStatu(false);
+                }else{
+                    Visitor visitor = new Visitor();
+                    visitor.visit(tree);
+                }
             }
-
-
         }
     }
 
