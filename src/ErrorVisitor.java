@@ -422,7 +422,7 @@ public class ErrorVisitor extends SysYParserBaseVisitor{
             retype=new BasicType(ctx.funcType().getText());
             Object paras=null;
             if(ctx.funcFParams()!=null){
-                paras = this.visitFuncFParams(ctx.funcFParams());
+                paras = this.visitFuncFParams(ctx.funcFParams(),1);
             }
             FunctionType func=null;
             if (paras instanceof List) {
@@ -437,17 +437,16 @@ public class ErrorVisitor extends SysYParserBaseVisitor{
 
         symbolTable.enterScope();
         if(ctx.funcFParams()!=null){
-            this.visitFuncFParams(ctx.funcFParams());
+            this.visitFuncFParams(ctx.funcFParams(),2);
         }
         this.visitBlock(ctx.block());
         return result;
     }
 
-    @Override
-    public Object visitFuncFParams(SysYParser.FuncFParamsContext ctx){
+    public Object visitFuncFParams(SysYParser.FuncFParamsContext ctx,int way){
         ArrayList<Type> parasType = new ArrayList<>();
         for(int i=0;i<ctx.funcFParam().size();++i){
-            parasType.add((Type) visitFuncFParam(ctx.funcFParam(i)));
+            parasType.add((Type) visitFuncFParam(ctx.funcFParam(i),way));
         }
 
         return parasType;
@@ -559,23 +558,24 @@ public class ErrorVisitor extends SysYParserBaseVisitor{
 
     }
 
-    @Override
-    public Object visitFuncFParam(SysYParser.FuncFParamContext ctx){
+    public Object visitFuncFParam(SysYParser.FuncFParamContext ctx,int way){
         Type type=null;
         if(ctx.L_BRACKT().size()==0){
             type = new BasicType("int");
         }else{
-            type = new ArrayType(new BasicType("int"),new int[0],1);
+            type = new ArrayType(new BasicType("int"),new int[0],ctx.L_BRACKT().size());
         }
 
         SymbolTable.SymbolTableEntry entry = symbolTable.lookup(ctx.IDENT().getText(),1);
-        if(entry!=null){
-            Token token = ctx.IDENT().getSymbol();
-            int line = token.getLine();
-            int charPositionInLine = token.getCharPositionInLine();
-            Object offendingSymbol = token.getText();
-            String msg = "3 redefined variable";
-            parseErrorListener.syntaxError(null, offendingSymbol, line, charPositionInLine, msg, null);
+        if(entry!=null) {
+            if (way == 1) {
+                Token token = ctx.IDENT().getSymbol();
+                int line = token.getLine();
+                int charPositionInLine = token.getCharPositionInLine();
+                Object offendingSymbol = token.getText();
+                String msg = "3 redefined variable";
+                parseErrorListener.syntaxError(null, offendingSymbol, line, charPositionInLine, msg, null);
+            }
         }else{
             symbolTable.addEntry(ctx.IDENT().getText(),type,0);
         }
