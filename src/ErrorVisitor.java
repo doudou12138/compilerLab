@@ -446,7 +446,11 @@ public class ErrorVisitor extends SysYParserBaseVisitor{
     public Object visitFuncFParams(SysYParser.FuncFParamsContext ctx,int way){
         ArrayList<Type> parasType = new ArrayList<>();
         for(int i=0;i<ctx.funcFParam().size();++i){
-            parasType.add((Type) visitFuncFParam(ctx.funcFParam(i),way));
+            Object paraType = visitFuncFParam(ctx.funcFParam(i),way);
+            if(paraType==null){
+                break;
+            }
+            parasType.add((Type) paraType);
         }
 
         return parasType;
@@ -559,12 +563,6 @@ public class ErrorVisitor extends SysYParserBaseVisitor{
     }
 
     public Object visitFuncFParam(SysYParser.FuncFParamContext ctx,int way){
-        Type type=null;
-        if(ctx.L_BRACKT().size()==0){
-            type = new BasicType("int");
-        }else{
-            type = new ArrayType(new BasicType("int"),new int[0],ctx.L_BRACKT().size());
-        }
 
         SymbolTable.SymbolTableEntry entry = symbolTable.lookup(ctx.IDENT().getText(),1);
         if(entry!=null) {
@@ -575,8 +573,15 @@ public class ErrorVisitor extends SysYParserBaseVisitor{
                 Object offendingSymbol = token.getText();
                 String msg = "3 redefined variable";
                 parseErrorListener.syntaxError(null, offendingSymbol, line, charPositionInLine, msg, null);
+                return null;
             }
         }else{
+            Type type=null;
+            if(ctx.L_BRACKT().size()==0){
+                type = new BasicType("int");
+            }else{
+                type = new ArrayType(new BasicType("int"),new int[0],ctx.L_BRACKT().size());
+            }
             symbolTable.addEntry(ctx.IDENT().getText(),type,0);
         }
 
