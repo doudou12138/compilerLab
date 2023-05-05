@@ -3,5 +3,7 @@ void a(int m){
 }
 
 int main(int n,int c){
-        int x=a(1,2);
+        int y=a(1);
+        int b[1]={1};
+        a(b);
 }

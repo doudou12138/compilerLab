@@ -162,7 +162,7 @@ public class ErrorVisitor extends SysYParserBaseVisitor{
             if (ctx.constExp().size() == 0) {
                 //basic type
                 symbolTable.addEntry(ctx.IDENT().getText(),type,0);
-                if(initType!=null&&(!(initType instanceof BasicType))){
+                if(initType!=null&&(!(initType.toString().equals("int")))){
                     Token token = ctx.IDENT().getSymbol();
                     int line = token.getLine();
                     int charPositionInLine = token.getCharPositionInLine();
@@ -305,7 +305,7 @@ public class ErrorVisitor extends SysYParserBaseVisitor{
 
                 Type type = ((FunctionType)entry.getType()).getReturnType();
                 if(type.toString().equals("void")){
-                    return null;
+                    return type;
                 }else{
                     return type;
                 }
