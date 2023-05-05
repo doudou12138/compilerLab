@@ -2,8 +2,16 @@ void a(int m){
  return 0;
 }
 
+int b(int m[],int x){
+    return m;
+}
+
 int main(int n,int c){
         int y=a(1);
-        int b[1]={1};
-        a(b);
+        int x[1][2] = {{1,2}};
+        int p=b(x[1],y);
+        b(x[1],8,2);
+        y=a+1;
+        y=a(1)+1;
+        y=b(x[1],2)+x[1];
 }

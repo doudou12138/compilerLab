@@ -315,23 +315,24 @@ public class ErrorVisitor extends SysYParserBaseVisitor{
         }else {
             if(ctx.L_PAREN()!=null){
                 return visitExp(ctx.exp(0));
-            }else{
-                Type type = (Type) visitExp(ctx.exp(0));
-                if (type == null) {
-                    return null;
-                }else if(!(type instanceof BasicType&&type.toString().equals("int"))){
-                    Token token = ctx.exp(0).getStart();
-                    int line = token.getLine();
-                    int charPositionInLine = token.getCharPositionInLine();
-                    Object offendingSymbol = token.getText();
-                    String msg = "6 the calculation needs type int";
-                    parseErrorListener.syntaxError(null, offendingSymbol, line, charPositionInLine, msg, null);
-                    return null;
-                }
-                for (int i = 1; i < ctx.exp().size(); ++i) {
-                    if (visitExp(ctx.exp(i)) == null||type != visitExp(ctx.exp(i))) {
-                        return null;
+            }else {
+                if (ctx.exp() != null) {
+                    Type type=null;
+                    for (int i = 0; i < ctx.exp().size(); ++i) {
+                        type = (Type) visitExp(ctx.exp(0));
+                        if (type == null) {
+                            return null;
+                        } else if (!(type instanceof BasicType && type.toString().equals("int"))) {
+                            Token token = ctx.exp(0).getStart();
+                            int line = token.getLine();
+                            int charPositionInLine = token.getCharPositionInLine();
+                            Object offendingSymbol = token.getText();
+                            String msg = "6 the calculation needs type int";
+                            parseErrorListener.syntaxError(null, offendingSymbol, line, charPositionInLine, msg, null);
+                            return null;
+                        }
                     }
+                    return type;
                 }
                 return type;
             }
