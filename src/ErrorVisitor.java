@@ -89,7 +89,7 @@ public class ErrorVisitor extends SysYParserBaseVisitor{
 
                 symbolTable.addEntry(ctx.IDENT().getText(),new ArrayType(type,eleNum,ctx.constExp().size()),0);
 
-                if(initType!=null&&((initType instanceof BasicType)||(initType instanceof ArrayType&&((ArrayType) initType).getDimension()!=ctx.constExp().size()))){
+                if(initType!=null&&((initType instanceof BasicType)||(initType instanceof ArrayType&&((ArrayType) initType).getDimension()!=ctx.constExp().size()&&ctx.constExp().size()<=1))){
                     Token token = ctx.IDENT().getSymbol();
                     int line = token.getLine();
                     int charPositionInLine = token.getCharPositionInLine();
@@ -180,7 +180,8 @@ public class ErrorVisitor extends SysYParserBaseVisitor{
 
                 symbolTable.addEntry(ctx.IDENT().getText(),new ArrayType(type,eleNum,ctx.constExp().size()),0);
 
-                if(initType!=null&&((initType instanceof BasicType)||(initType instanceof ArrayType&&((ArrayType) initType).getDimension()!=ctx.constExp().size()))){
+                //hahah
+                if(initType!=null&&((initType instanceof BasicType)||(initType instanceof ArrayType&&((ArrayType) initType).getDimension()!=ctx.constExp().size())&&ctx.constExp().size()<=1)){
                     Token token = ctx.IDENT().getSymbol();
                     int line = token.getLine();
                     int charPositionInLine = token.getCharPositionInLine();
