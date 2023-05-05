@@ -563,25 +563,39 @@ public class ErrorVisitor extends SysYParserBaseVisitor{
             visitExp(ctx.exp());
         }else {
             if(ctx.cond()!=null){
-                visitCond(ctx.cond());
-            }
-            if(ctx.stmt().size()!=0) {
-                for (int i = 0; i < ctx.stmt().size(); ++i) {
-                    visitStmt(ctx.stmt(i));
+                boolean conError = (Boolean)visitCond(ctx.cond());
+                if(!conError) {
+                    if (ctx.stmt().size() != 0) {
+                        for (int i = 0; i < ctx.stmt().size(); ++i) {
+                            visitStmt(ctx.stmt(i));
+                        }
+                    }
                 }
             }
         }
 
         return result;
-
     }
 
-    //@Override
-    //public Object visitCond(SysYParser.CondContext ctx){
-    //    if(ctx.cond()==null){
-    //        Type type=
-    //    }
-    //}
+    @Override
+    public Object visitCond(SysYParser.CondContext ctx){
+        if(ctx.cond()==null||ctx.cond().size()==0){
+            Object type= visitExp(ctx.exp());
+            if(type==null){
+                return true;
+            }
+            return false;
+        }else{
+            Object conError=null;
+            for(int i=0;i<ctx.cond().size();++i){
+                conError=visitCond(ctx.cond(i));
+                if((boolean) conError){
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
 
     public Object visitFuncFParam(SysYParser.FuncFParamContext ctx,int way){
         Type type=null;
