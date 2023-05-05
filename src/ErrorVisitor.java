@@ -446,27 +446,31 @@ public class ErrorVisitor extends SysYParserBaseVisitor {
             }
             symbolTable.exitScope();
             symbolTable.addEntry(ctx.IDENT().getText(), func, 0);
-        }
-
-        if(ctx.funcFParams()!=null&&ctx.funcFParams().funcFParam()!=null&&((FunctionType)symbolTable.lookup(ctx.IDENT().getText(),1).getType()).getParameterTypes()!=null){
-            if (ctx.funcFParams().funcFParam().size() == ((FunctionType) symbolTable.lookup(ctx.IDENT().getText(), 1).getType()).getParameterTypes().size()) {
-                symbolTable.enterScope();
-                if (ctx.funcFParams() != null) {
-                    this.visitFuncFParams(ctx.funcFParams(), 2);
-                }
-                this.visitBlock(ctx.block());
-                return result;
-            }
-        }else if((ctx.funcFParams()==null)^((FunctionType)symbolTable.lookup(ctx.IDENT().getText(),1).getType()).getParameterTypes()==null){
-
-        }else{
+            //        if(ctx.funcFParams()!=null&&ctx.funcFParams().funcFParam()!=null&&((FunctionType)symbolTable.lookup(ctx.IDENT().getText(),1).getType()).getParameterTypes()!=null){
+//            if (ctx.funcFParams().funcFParam().size() == ((FunctionType) symbolTable.lookup(ctx.IDENT().getText(), 1).getType()).getParameterTypes().size()) {
+//                symbolTable.enterScope();
+//                if (ctx.funcFParams() != null) {
+//                    this.visitFuncFParams(ctx.funcFParams(), 2);
+//                }
+//                this.visitBlock(ctx.block());
+//                return result;
+//            }
+//        }else if((ctx.funcFParams()==null)^((FunctionType)symbolTable.lookup(ctx.IDENT().getText(),1).getType()).getParameterTypes()==null){
+//
+//        }else{
+//            symbolTable.enterScope();
+//            this.visitBlock(ctx.block());
+//            return result;
+//        }
             symbolTable.enterScope();
+            if (ctx.funcFParams() != null) {
+                this.visitFuncFParams(ctx.funcFParams(), 2);
+            }
             this.visitBlock(ctx.block());
             return result;
         }
 
-        return result;
-    }
+     }
 
     public Object visitFuncFParams(SysYParser.FuncFParamsContext ctx, int times) {
         ArrayList<Type> parasType = new ArrayList<>();
