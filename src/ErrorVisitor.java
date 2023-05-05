@@ -274,6 +274,14 @@ public class ErrorVisitor extends SysYParserBaseVisitor{
                 if(ctx.funcRParams()!=null) {
                    parasType = (ArrayList<Type>) visitFuncRParams(ctx.funcRParams());
                 }
+
+                if(parasType!=null&&((FunctionType) entry.getType()).getParameterTypes()!=null){
+                    for(int i=0;i<parasType.size();++i){
+                        if(parasType.get(i)==null){
+                            return null;
+                        }
+                    }
+                }
                 boolean parasMis=true;
                 if(parasType==null&&((FunctionType) entry.getType()).getParameterTypes()==null){
                     parasMis = false;
