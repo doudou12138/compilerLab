@@ -319,7 +319,7 @@ public class ErrorVisitor extends SysYParserBaseVisitor{
                 if (ctx.exp() != null) {
                     Type type=null;
                     for (int i = 0; i < ctx.exp().size(); ++i) {
-                        type = (Type) visitExp(ctx.exp(0));
+                        type = (Type) visitExp(ctx.exp(i));
                         if (type == null) {
                             return null;
                         } else if (!(type instanceof BasicType && type.toString().equals("int"))) {

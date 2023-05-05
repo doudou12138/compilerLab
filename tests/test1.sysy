@@ -14,4 +14,5 @@ int main(int n,int c){
         y=a+1;
         y=a(1)+1;
         y=b(x[1],2)+x[1];
+        y=b/3;
 }
