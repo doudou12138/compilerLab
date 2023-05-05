@@ -84,7 +84,7 @@ public class ErrorVisitor extends SysYParserBaseVisitor {
                 //array type
                 int eleNum[] = new int[ctx.constExp().size()];
                 for (int i = 0; i < ctx.constExp().size(); ++i) {
-                    eleNum[i] = Utils.toDecimal(ctx.constExp(i).getText());
+                    //eleNum[i] = Utils.toDecimal(ctx.constExp(i).getText());
                 }
 
                 symbolTable.addEntry(ctx.IDENT().getText(), new ArrayType(type, eleNum, ctx.constExp().size()), 0);
