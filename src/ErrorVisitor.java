@@ -559,17 +559,29 @@ public class ErrorVisitor extends SysYParserBaseVisitor{
         }else if(ctx.block()!=null){
             symbolTable.enterScope();
             visitBlock(ctx.block());
-        }else if(ctx.stmt().size()!=0){
-            for(int i=0;i<ctx.stmt().size();++i){
-                visitStmt(ctx.stmt(i));
-            }
         }else if(ctx.exp()!=null){
             visitExp(ctx.exp());
+        }else {
+            if(ctx.cond()!=null){
+                visitCond(ctx.cond());
+            }
+            if(ctx.stmt().size()!=0) {
+                for (int i = 0; i < ctx.stmt().size(); ++i) {
+                    visitStmt(ctx.stmt(i));
+                }
+            }
         }
 
         return result;
 
     }
+
+    //@Override
+    //public Object visitCond(SysYParser.CondContext ctx){
+    //    if(ctx.cond()==null){
+    //        Type type=
+    //    }
+    //}
 
     public Object visitFuncFParam(SysYParser.FuncFParamContext ctx,int way){
         Type type=null;

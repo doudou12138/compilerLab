@@ -8,5 +8,12 @@ int b(int m[],int x){
 
 int main(int n,int c){
         int x[1][2]={{1,2}};
-        b(x[1],c+a(1));
+        //c+n;
+        //c+n+a(n);
+        //c+n+a(a(n));
+        //c+n+a(b(x[1],n));
+        //int w=c+n+b(x[1],n)+(x[1][2]);
+        if(a==c+n+b(x[1],n)){
+            c+n;
+        }
 }
