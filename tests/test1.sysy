@@ -1,20 +1,20 @@
-void a(int m){
- return 0;
-}
+//void a(int m){
+// return 0;
+//}
 
-int b(int m,int m){
-    return m;
+int b(int m,int n){
+    return n;
 }
 
 
 int main(int n,int c){
-        int x[1][2]={{1,2}};
+        //const int x[1][2]={{1,2}};
         //c+n;
         //c+n+a(n);
         //c+n+a(a(n));
-        c+n+a(b(x[1][2],n));
-        //int w=c+n+b(x[1],n)+(x[1][2]);
-        if((a+b)==c+n+b(x[1],n)){
+        //c+n+a(b(x[1][2],n));
+        const int w=b(1,n)+1+n;
+        if((a+b)==c+n+b(1,n)){
             c+n;
             c+a;
         }
