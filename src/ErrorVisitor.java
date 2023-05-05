@@ -557,14 +557,9 @@ public class ErrorVisitor extends SysYParserBaseVisitor {
         Object result = this.defaultResult();
         if (ctx.lVal() != null) {
             Type type_l = (Type) visitLVal(ctx.lVal());
-            Type type_r = (Type) visitExp(ctx.exp());
-            if (type_l == null || type_r == null) {
+            if(type_l==null){
                 return null;
-            } else if (type_l instanceof BasicType && type_r instanceof BasicType) {
-                return null;
-            } else if (type_l instanceof ArrayType && type_r instanceof ArrayType && ((ArrayType) type_l).getDimension() == ((ArrayType) type_r).getDimension()) {
-
-            } else if (type_l instanceof FunctionType) {
+            }else if (type_l instanceof FunctionType) {
                 Token token = ctx.lVal().getStart();
                 int line = token.getLine();
                 int charPositionInLine = token.getCharPositionInLine();
@@ -572,6 +567,15 @@ public class ErrorVisitor extends SysYParserBaseVisitor {
                 String msg = "11" + "assign for the function";
                 parseErrorListener.syntaxError(null, offendingSymbol, line, charPositionInLine, msg, null);
                 return null;
+            }
+
+            Type type_r = (Type) visitExp(ctx.exp());
+            if ( type_r == null) {
+                return null;
+            } else if (type_l instanceof BasicType && type_r instanceof BasicType) {
+                return null;
+            } else if (type_l instanceof ArrayType && type_r instanceof ArrayType && ((ArrayType) type_l).getDimension() == ((ArrayType) type_r).getDimension()) {
+
             } else {
                 Token token = ctx.lVal().getStart();
                 int line = token.getLine();
