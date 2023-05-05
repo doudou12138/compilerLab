@@ -187,7 +187,6 @@ public class ErrorVisitor extends SysYParserBaseVisitor{
                     Object offendingSymbol = token.getText();
                     String msg = "5 type mismatched";
                     parseErrorListener.syntaxError(null, offendingSymbol, line, charPositionInLine, msg, null);
-                    System.err.println(initType instanceof ArrayType);
                     return result;
                 }
             }
