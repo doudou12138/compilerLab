@@ -275,6 +275,10 @@ public class ErrorVisitor extends SysYParserBaseVisitor {
                     parasType = (ArrayList<Type>) visitFuncRParams(ctx.funcRParams());
                 }
 
+                if(parasType==null&&ctx.funcRParams()!=null){
+                    return null;
+                }
+
                 if (parasType != null && ((FunctionType) entry.getType()).getParameterTypes() != null) {
                     for (int i = 0; i < parasType.size(); ++i) {
                         if (parasType.get(i) == null) {
@@ -444,9 +448,6 @@ public class ErrorVisitor extends SysYParserBaseVisitor {
             symbolTable.addEntry(ctx.IDENT().getText(), func, 0);
         }
 
-//        System.err.println(ctx.funcFParams().funcFParam().size());
-//        System.err.println(((FunctionType) symbolTable.lookup(ctx.IDENT().getText(), 1).getType()).getParameterTypes().size());
-
         if(ctx.funcFParams()!=null&&ctx.funcFParams().funcFParam()!=null&&((FunctionType)symbolTable.lookup(ctx.IDENT().getText(),1).getType()).getParameterTypes()!=null){
             if (ctx.funcFParams().funcFParam().size() == ((FunctionType) symbolTable.lookup(ctx.IDENT().getText(), 1).getType()).getParameterTypes().size()) {
                 symbolTable.enterScope();
@@ -517,14 +518,33 @@ public class ErrorVisitor extends SysYParserBaseVisitor {
     public Object visitFuncRParams(SysYParser.FuncRParamsContext ctx) {
         ArrayList<Type> parasType = new ArrayList<>();
         for (int i = 0; i < ctx.param().size(); ++i) {
-            parasType.add((Type) visitParam(ctx.param(i)));
+            Type paraType = (Type) visitParam(ctx.param(i));
+            if(paraType==null){
+                return null;
+            }
+            parasType.add(paraType);
         }
         return parasType;
     }
 
     public Object visitParam(SysYParser.ParamContext ctx) {
-        Type type = (Type) visitExp(ctx.exp());
-        return type;
+        Object type =  visitExp(ctx.exp());
+        if(type==null){
+            return null;
+        }else{
+            Type type_t = (Type) type;
+            if(type_t.toString().equals("void")){
+                Token token = ctx.exp().getStart();
+                int line = token.getLine();
+                int charPositionInLine = token.getCharPositionInLine();
+                Object offendingSymbol = token.getText();
+                String msg = "8 " + "para";
+                parseErrorListener.syntaxError(null, offendingSymbol, line, charPositionInLine, msg, null);
+                return null;
+            }else{
+                return type_t;
+            }
+        }
     }
 
 
