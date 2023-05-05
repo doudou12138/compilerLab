@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.xml.transform.ErrorListener;
-
 public class ErrorVisitor extends SysYParserBaseVisitor{
     public SymbolTable symbolTable;
     private ParseErrorListener parseErrorListener;
@@ -82,7 +80,7 @@ public class ErrorVisitor extends SysYParserBaseVisitor{
                     parseErrorListener.syntaxError(null, offendingSymbol, line, charPositionInLine, msg, null);
                     return result;
                 }
-            } else {
+            } else{
                 //array type
                 int eleNum[] = new int[ctx.constExp().size()];
                 for(int i=0;i<ctx.constExp().size();++i){
@@ -201,7 +199,9 @@ public class ErrorVisitor extends SysYParserBaseVisitor{
     @Override
     public Object visitInitVal(SysYParser.InitValContext ctx){
             if(ctx.initVal().size()==0){
-                return visitExp(ctx.exp());
+                if(ctx.exp()!=null) {
+                    return visitExp(ctx.exp());
+                }
             }else{
                 Object type=visitInitVal(ctx.initVal(0));
                 if(type==null){
@@ -277,9 +277,9 @@ public class ErrorVisitor extends SysYParserBaseVisitor{
                 boolean parasMis=true;
                 if(parasType==null&&((FunctionType) entry.getType()).getParameterTypes()==null){
                     parasMis = false;
-                }else if(parasType==null^((FunctionType) entry.getType()).getParameterTypes()==null){
+                }else if((parasType==null&&((FunctionType) entry.getType()).getParameterTypes()!=null)||(parasType!=null&&((FunctionType) entry.getType()).getParameterTypes()==null)){
 
-                }else if(((FunctionType) entry.getType()).getParameterTypes().size()==parasType.size()){
+                }else if(parasType!=null&&((FunctionType) entry.getType()).getParameterTypes().size()==parasType.size()){
                     {
                         boolean same=true;
                         for (int i = 0; i < parasType.size(); ++i) {
@@ -517,7 +517,7 @@ public class ErrorVisitor extends SysYParserBaseVisitor{
                     if(visitExp(ctx.exp()).toString().equals(retype.toString())){
 
                     }else{
-                        Token token = ctx.lVal().getStart();
+                        Token token = ctx.RETURN().getSymbol();
                         int line = token.getLine();
                         int charPositionInLine = token.getCharPositionInLine();
                         Object offendingSymbol = token.getText();
