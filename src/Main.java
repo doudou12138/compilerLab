@@ -2,11 +2,12 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.IOException;
-import org.bytedeco.llvm.LLVM.*;
 import static org.bytedeco.llvm.global.LLVM.*;
+import org.bytedeco.javacpp.BytePointer;
 
 public class Main {
     SymbolTable symbolTable=new SymbolTable();
+    public static final BytePointer error = new BytePointer();
 
     public static void main(String[] args) throws IOException {
         if (args.length < 1) {
@@ -64,7 +65,10 @@ public class Main {
 
                     SysYLlvmVisitor llVisitor = new SysYLlvmVisitor();
                     llVisitor.visit(tree);
-                    llVisitor.printLlvm();
+
+                    if (LLVMPrintModuleToFile(llVisitor.module, args[1], error) != 0) {    // moudle是你自定义的LLVMModuleRef对象
+                        LLVMDisposeMessage(error);
+                    }
 
                 }
             }

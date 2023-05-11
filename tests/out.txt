@@ -1,0 +1,14 @@
+; ModuleID = 'moudle'
+source_filename = "moudle"
+
+define i32 @main() {
+mainEntry:
+  ret void
+  ret i32 -4
+  ret i32 -3
+  ret i32 1
+  ret i32 63
+  ret i32 1
+  ret i32 1
+  ret i32 poison
+}

@@ -97,7 +97,4 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             return null;
     }
 
-    public void printLlvm(){
-        LLVMDumpModule(module);
-    }
 }
