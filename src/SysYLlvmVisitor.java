@@ -72,7 +72,10 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                         }else if(ctx.unaryOp().PLUS()!=null){
                             return exp_0;
                         }else if(ctx.unaryOp().NOT()!=null){
-                            return LLVMBuildNot(builder,exp_0,"notExp");
+                            LLVMValueRef zero = LLVMConstInt(i32Type, 0, 0);
+                            LLVMValueRef one = LLVMConstInt(i32Type, 1, 0);
+                            LLVMValueRef result = LLVMBuildXor(builder, exp_0, zero, "xortmp");
+                            return LLVMBuildSelect(builder, LLVMBuildICmp(builder, LLVMIntEQ, result, zero, "isZero"), one, zero, "notExpSelect");
                         }
                     } else{
                         return exp_0;//(exp)
