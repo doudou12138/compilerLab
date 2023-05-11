@@ -1,9 +1,9 @@
-import org.antlr.runtime.tree.TreeWizard;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.IOException;
-import java.util.List;
+import org.bytedeco.llvm.LLVM.*;
+import static org.bytedeco.llvm.global.LLVM.*;
 
 public class Main {
     SymbolTable symbolTable=new SymbolTable();
@@ -55,11 +55,17 @@ public class Main {
                 ErrorVisitor errorVisitor = new ErrorVisitor(symbolTable,myParseErrorListener);
                 errorVisitor.visit(tree);
 
-                if(myParseErrorListener.hasError()){
+                if(false){
+                    //if(myParseErrorListener.hasError()){
                     myParseErrorListener.changeStatu(false);
                 }else{
-                    Visitor visitor = new Visitor();
-                    visitor.visit(tree);
+                    //Visitor visitor = new Visitor();
+                    //visitor.visit(tree);
+
+                    SysYLlvmVisitor llVisitor = new SysYLlvmVisitor();
+                    llVisitor.visit(tree);
+                    llVisitor.printLlvm();
+
                 }
             }
         }
