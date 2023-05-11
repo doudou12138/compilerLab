@@ -72,7 +72,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                         }else if(ctx.unaryOp().PLUS()!=null){
                             return exp_0;
                         }else if(ctx.unaryOp().NOT()!=null){
-                            LLVMBuildNot(builder,exp_0,"notExp");
+                            return LLVMBuildNot(builder,exp_0,"notExp");
                         }
                     } else{
                         return exp_0;//(exp)
