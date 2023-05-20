@@ -148,7 +148,14 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             }
             //函数返回指令
             LLVMBuildRet(builder, /*result:LLVMValueRef*/result);
-
+        }else if(ctx.block()!=null){
+            llvmSymbolTable.enterScope();
+            visitBlock(ctx.block());
+            llvmSymbolTable.exitScope();
+        }else if(ctx.ASSIGN()!=null){
+            LLVMSymbolTable.SymbolTableEntry entry = llvmSymbolTable.lookup(ctx.lVal().IDENT().getText(),2);
+            LLVMValueRef value = visitExp(ctx.exp());
+            LLVMBuildStore(builder,value,entry.getLLValue());
         }
         return null;
     }

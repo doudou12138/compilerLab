@@ -1,27 +1,26 @@
 ; ModuleID = 'moudle'
 source_filename = "moudle"
 
-@x = global i32 1
-@y = global i32 3
+@global = global i32 1
 
 define i32 @main() {
 mainEntry:
   %a = alloca i32, align 4
-  store i32 6, i32* %a, align 4
+  store i32 2, i32* %a, align 4
   %b = alloca i32, align 4
   %a1 = load i32, i32* %a, align 4
   store i32 %a1, i32* %b, align 4
-  %b2 = load i32, i32* %b, align 4
-  %addtmp = add i32 %b2, 1
+  %x = alloca i32, align 4
+  store i32 1, i32* %x, align 4
+  store i32 3, i32* %x, align 4
+  %x2 = load i32, i32* %x, align 4
+  %addtmp = add i32 1, %x2
   ret i32 %addtmp
 }
 
 define i32 @main.1() {
 mainEntry:
-  %i = alloca i32, align 4
-  store i32 1, i32* %i, align 4
-  ret i32 3
-  %x = load i32, i32* @x, align 4
-  %addtmp = add i32 1, %x
+  %global = load i32, i32* @global, align 4
+  %addtmp = add i32 1, %global
   ret i32 %addtmp
 }
