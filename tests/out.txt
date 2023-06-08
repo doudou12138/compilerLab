@@ -3,7 +3,7 @@ source_filename = "moudle"
 
 @global = global i32 1
 
-define i32 @main() {
+define i32 @main(i32 %0) {
 mainEntry:
   %a = alloca i32, align 4
   store i32 2, i32* %a, align 4
@@ -21,7 +21,7 @@ mainEntry:
 define i32 @main1() {
 main1Entry:
   %m = alloca i32, align 4
-  %callmain = call i32 @main()
+  %callmain = call i32 @main(i32 1)
   ret i32 %callmain
   store i32 %callmain, i32* %m, align 4
   %global = load i32, i32* @global, align 4

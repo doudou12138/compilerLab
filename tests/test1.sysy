@@ -1,14 +1,14 @@
-int main(){
+int main(int s){
     const int a = 2;
     const int b=a;
     int x=1;
     x=3;
-    return 1+x;
+    return 1+s;
 }
 
 int global=1;
 
 int main1(){
-    int m=main();
+    int m=main(1);
     return 1+global;
 }

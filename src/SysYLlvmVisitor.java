@@ -114,6 +114,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
         LLVMPositionBuilderAtEnd(builder, block);//后续生成的指令将追加在block1的后面
 
         llvmSymbolTable.enterScope();
+
         visit(ctx.block());
         llvmSymbolTable.exitScope();
         return null;
@@ -121,8 +122,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
 
     @Override
     public LLVMValueRef visitParam(SysYParser.ParamContext ctx){
-        visitExp(ctx.exp());
-        return null;
+        return visitExp(ctx.exp());
     }
 
     @Override
