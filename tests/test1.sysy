@@ -9,5 +9,6 @@ int main(){
 int global=1;
 
 int main1(){
+    int m=main();
     return 1+global;
 }

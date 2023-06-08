@@ -1,4 +1,6 @@
 
+import org.bytedeco.javacpp.Pointer;
+import org.bytedeco.javacpp.PointerPointer;
 import org.bytedeco.llvm.LLVM.*;
 
 import java.util.List;
@@ -82,19 +84,44 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
         //生成返回值类型
         LLVMTypeRef returnType = i32Type;
 
-        //生成函数类型
-        LLVMTypeRef ft = LLVMFunctionType(returnType, (LLVMTypeRef) null, /* argumentCount */ 0, /* isVariadic */ 0);
+        LLVMTypeRef ft=null;
+        if(ctx.funcFParams()==null){
+            ft = LLVMFunctionType(returnType, (LLVMTypeRef) null, /* argumentCount */ 0, /* isVariadic */ 0);
+        }else if(ctx.funcFParams().funcFParam()==null){
+
+        }else if(ctx.funcFParams().funcFParam().size()==1){
+            ft = LLVMFunctionType(returnType, i32Type, /* argumentCount */ 1, /* isVariadic */ 0);
+        }else{
+            List<SysYParser.FuncFParamContext> paras = ctx.funcFParams().funcFParam();
+            //生成函数参数类型
+            PointerPointer<Pointer> argumentTypes = new PointerPointer<>(paras.size());
+            for(int m=0;m<paras.size();++m){
+                argumentTypes.put(m,i32Type);
+            }
+
+            //生成函数类型
+            ft = LLVMFunctionType(returnType, argumentTypes , /* argumentCount */ paras.size(), /* isVariadic */ 0);
+
+        }
 
         //生成函数，即向之前创建的module中添加函数
-        LLVMValueRef function = LLVMAddFunction(module, /*functionName:String*/"main", ft);
+        LLVMValueRef function = LLVMAddFunction(module, /*functionName:String*/ctx.IDENT().getText(), ft);
+        llvmSymbolTable.addEntry(ctx.IDENT().getText(),function,0);
+
         //通过如下语句在函数中加入基本块，一个函数可以加入多个基本块
-        block = LLVMAppendBasicBlock(function, /*blockName:String*/"mainEntry");
+        block = LLVMAppendBasicBlock(function, /*blockName:String*/ctx.IDENT().getText()+"Entry");
         //选择要在哪个基本块后追加指令
         LLVMPositionBuilderAtEnd(builder, block);//后续生成的指令将追加在block1的后面
 
         llvmSymbolTable.enterScope();
         visit(ctx.block());
         llvmSymbolTable.exitScope();
+        return null;
+    }
+
+    @Override
+    public LLVMValueRef visitParam(SysYParser.ParamContext ctx){
+        visitExp(ctx.exp());
         return null;
     }
 
@@ -169,7 +196,19 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             }else if(ctx.lVal()!=null){
                 return visitLVal(ctx.lVal());
             }else if(ctx.IDENT()!=null){
-                //
+                LLVMValueRef func = llvmSymbolTable.lookup(ctx.IDENT().getText(),2).getLLValue();
+                LLVMValueRef result;
+                if(ctx.funcRParams()==null){
+                    result = LLVMBuildCall(builder,func,(PointerPointer) null,0,"call"+ctx.IDENT().getText());
+                }else {
+                    LLVMValueRef[] args = new LLVMValueRef[ctx.funcRParams().param().size()];
+                    for(int i=0;i<ctx.funcRParams().param().size();++i){
+                        args[i]=visitParam(ctx.funcRParams().param(i));
+                    }
+                    result = LLVMBuildCall(builder,func,new PointerPointer<>(args),ctx.funcRParams().param().size(),"call"+ctx.IDENT().getText());
+                }
+                LLVMBuildRet(builder,result);
+                return result;
             }else{
                 return null;
             }

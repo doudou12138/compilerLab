@@ -18,8 +18,12 @@ mainEntry:
   ret i32 %addtmp
 }
 
-define i32 @main.1() {
-mainEntry:
+define i32 @main1() {
+main1Entry:
+  %m = alloca i32, align 4
+  %callmain = call i32 @main()
+  ret i32 %callmain
+  store i32 %callmain, i32* %m, align 4
   %global = load i32, i32* @global, align 4
   %addtmp = add i32 1, %global
   ret i32 %addtmp
