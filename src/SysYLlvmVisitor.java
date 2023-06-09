@@ -237,7 +237,9 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
 
             LLVMPositionBuilderAtEnd(builder,con_block);
             //条件跳转指令，选择跳转到哪个块
-            LLVMBuildCondBr(builder, /*condition:LLVMValueRef*/ cond,trueBlock/*ifTrue:LLVMBasicBlockRef*/,falseBlock/*ifFalse:LLVMBasicBlockRef*/);
+            LLVMValueRef cond_b = LLVMBuildZExt(builder,cond,i32Type,"cond");
+            LLVMValueRef cond_end = LLVMBuildICmp(builder,LLVMIntNE,LLVMConstInt(i32Type,0,0),cond_b,"cond");
+            LLVMBuildCondBr(builder, /*condition:LLVMValueRef*/ cond_end,trueBlock/*ifTrue:LLVMBasicBlockRef*/,falseBlock/*ifFalse:LLVMBasicBlockRef*/);
 
             //选择要在哪个基本块后追加指令
             LLVMPositionBuilderAtEnd(builder, next_block);//后续生成的指令将追加在block1的后面

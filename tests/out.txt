@@ -10,7 +10,9 @@ mainEntry:
 condition:                                        ; preds = %mainEntry
   %a = load i32, i32* @a, align 4
   %ne = icmp ne i32 %a, 10
-  br i1 %ne, label %the_true, label %the_false
+  %cond = zext i1 %ne to i32
+  %cond1 = icmp ne i32 0, %cond
+  br i1 %cond1, label %the_true, label %the_false
 
 the_true:                                         ; preds = %condition
   store i32 2, i32* @a, align 4
@@ -21,6 +23,6 @@ the_false:                                        ; preds = %condition
   br label %the_next
 
 the_next:                                         ; preds = %the_false, %the_true
-  %a1 = load i32, i32* @a, align 4
-  ret i32 %a1
+  %a2 = load i32, i32* @a, align 4
+  ret i32 %a2
 }
