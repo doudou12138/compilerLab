@@ -4,6 +4,7 @@ import org.bytedeco.javacpp.PointerPointer;
 import org.bytedeco.llvm.LLVM.*;
 
 import java.util.List;
+import java.util.Stack;
 
 import static org.bytedeco.llvm.global.LLVM.*;
 import static org.bytedeco.llvm.global.LLVM.LLVMInitializeNativeTarget;
@@ -13,6 +14,9 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
     LLVMBuilderRef builder=null;
     LLVMTypeRef i32Type=null;
     LLVMBasicBlockRef block=null;
+
+    LLVMValueRef func_now = null;
+    Stack<LLVMBasicBlockRef> blocks = null;
 
     LLVMSymbolTable llvmSymbolTable = null;
 
@@ -31,6 +35,8 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
         builder = LLVMCreateBuilder();
         //考虑到我们的语言中仅存在int一个基本类型，可以通过下面的语句为LLVM的int型重命名方便以后使用
         i32Type = LLVMInt32Type();
+
+        blocks = new Stack<>();
     }
 
     @Override
@@ -108,11 +114,14 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
         LLVMValueRef function = LLVMAddFunction(module, /*functionName:String*/ctx.IDENT().getText(), ft);
         llvmSymbolTable.addEntry(ctx.IDENT().getText(),function,0);
 
+        func_now = function;
+
         //通过如下语句在函数中加入基本块，一个函数可以加入多个基本块
         block = LLVMAppendBasicBlock(function, /*blockName:String*/ctx.IDENT().getText()+"Entry");
         //选择要在哪个基本块后追加指令
         LLVMPositionBuilderAtEnd(builder, block);//后续生成的指令将追加在block1的后面
 
+        blocks.push(block);
         llvmSymbolTable.enterScope();
 
         if(ctx.funcFParams()!=null){
@@ -124,6 +133,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
 
         visit(ctx.block());
         llvmSymbolTable.exitScope();
+
         return null;
     }
 
@@ -183,6 +193,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             //函数返回指令
             LLVMBuildRet(builder, /*result:LLVMValueRef*/result);
         }else if(ctx.block()!=null){
+
             llvmSymbolTable.enterScope();
             visitBlock(ctx.block());
             llvmSymbolTable.exitScope();
@@ -190,9 +201,79 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             LLVMSymbolTable.SymbolTableEntry entry = llvmSymbolTable.lookup(ctx.lVal().IDENT().getText(),2);
             LLVMValueRef value = visitExp(ctx.exp());
             LLVMBuildStore(builder,value,entry.getLLValue());
+        }else if(ctx.IF()!=null){
+            block = blocks.pop();
+            LLVMBasicBlockRef con_block = LLVMAppendBasicBlock(func_now,"condition");
+            LLVMBuildBr(builder,con_block);
+
+            LLVMPositionBuilderAtEnd(builder,con_block);
+            blocks.push(con_block);
+            LLVMValueRef cond = visitCond(ctx.cond());
+            blocks.pop();
+
+            LLVMBasicBlockRef trueBlock = LLVMAppendBasicBlock(func_now,"the_true");
+
+            LLVMBasicBlockRef falseBlock= LLVMAppendBasicBlock(func_now,"the_false");
+            //通过如下语句在函数中加入基本块，一个函数可以加入多个基本块
+            LLVMBasicBlockRef next_block = LLVMAppendBasicBlock(func_now, /*blockName:String*/"the_next");
+
+            LLVMPositionBuilderAtEnd(builder,trueBlock);
+
+            blocks.push(trueBlock);
+            visitStmt(ctx.stmt(0));
+            blocks.pop();
+            LLVMBuildBr(builder,next_block);
+
+            if(ctx.ELSE()!=null){
+
+                LLVMPositionBuilderAtEnd(builder,falseBlock);
+                blocks.push(falseBlock);
+                visitStmt(ctx.stmt(1));
+                blocks.pop();
+                LLVMBuildBr(builder,next_block);
+
+            }
+
+            LLVMPositionBuilderAtEnd(builder,con_block);
+            //条件跳转指令，选择跳转到哪个块
+            LLVMBuildCondBr(builder, /*condition:LLVMValueRef*/ cond,trueBlock/*ifTrue:LLVMBasicBlockRef*/,falseBlock/*ifFalse:LLVMBasicBlockRef*/);
+
+            //选择要在哪个基本块后追加指令
+            LLVMPositionBuilderAtEnd(builder, next_block);//后续生成的指令将追加在block1的后面
+
         }
         return null;
     }
+
+    @Override
+    public LLVMValueRef visitCond(SysYParser.CondContext ctx) {
+        if (ctx.exp() != null) {
+            return visitExp(ctx.exp());
+        } else {
+            LLVMValueRef cond = null;
+            LLVMValueRef cond1 = visitCond(ctx.cond(0));
+            LLVMValueRef cond2 = visitCond(ctx.cond(1));
+            if (ctx.LT() != null) {
+                cond = LLVMBuildICmp(builder,LLVMIntSLT,cond1,cond2,"lt");
+            }else if(ctx.GT()!=null){
+                cond = LLVMBuildICmp(builder,LLVMIntSGT,cond1,cond2,"gt");
+            }else if(ctx.GE()!=null){
+                cond = LLVMBuildICmp(builder,LLVMIntSGE,cond1,cond2,"ge");
+            }else if(ctx.LE()!=null){
+                cond = LLVMBuildICmp(builder,LLVMIntSLE,cond1,cond2,"le");
+            }else if(ctx.EQ()!=null){
+                cond = LLVMBuildICmp(builder,LLVMIntEQ,cond1,cond2,"eq");
+            }else if(ctx.NEQ()!=null){
+                cond = LLVMBuildICmp(builder,LLVMIntNE,cond1,cond2,"ne");
+            }else if(ctx.AND()!=null){
+                cond = LLVMBuildICmp(builder,LLVMAnd,cond1,cond2,"and");
+            }else if(ctx.OR()!=null){
+                cond = LLVMBuildICmp(builder,LLVMOr,cond1,cond2,"or");
+            }
+            return cond;
+        }
+    }
+
 
     @Override
     public LLVMValueRef visitExp(SysYParser.ExpContext ctx){
