@@ -1,4 +1,5 @@
 
+import com.sun.source.tree.WhileLoopTree;
 import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.PointerPointer;
 import org.bytedeco.llvm.LLVM.*;
@@ -194,7 +195,6 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             //函数返回指令
             LLVMBuildRet(builder, /*result:LLVMValueRef*/result);
         }else if(ctx.block()!=null){
-
             llvmSymbolTable.enterScope();
             visitBlock(ctx.block());
             llvmSymbolTable.exitScope();
@@ -244,6 +244,34 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
 
             //选择要在哪个基本块后追加指令
             LLVMPositionBuilderAtEnd(builder, next_block);//后续生成的指令将追加在block1的后面
+
+        }else if(ctx.WHILE()!=null){
+            LLVMBasicBlockRef con_block = LLVMAppendBasicBlock(func_now,"condition");
+            LLVMBasicBlockRef whi_body = LLVMAppendBasicBlock(func_now,"while_body");
+            LLVMBasicBlockRef next_block =LLVMAppendBasicBlock(func_now,"next_block");
+
+            LLVMBuildBr(builder,con_block);
+
+            LLVMPositionBuilderAtEnd(builder,con_block);
+            blocks.push(con_block);
+            LLVMValueRef cond = visitCond(ctx.cond());
+            blocks.pop();
+
+            LLVMPositionBuilderAtEnd(builder,whi_body);
+            blocks.push(whi_body);
+            visitStmt(ctx.stmt(0));
+            blocks.pop();
+
+            LLVMPositionBuilderAtEnd(builder,con_block);
+            //条件跳转指令，选择跳转到哪个块
+            LLVMValueRef cond_b = LLVMBuildZExt(builder,cond,i32Type,"cond");
+            LLVMValueRef cond_end = LLVMBuildICmp(builder,LLVMIntNE,LLVMConstInt(i32Type,0,0),cond_b,"cond");
+            LLVMBuildCondBr(builder, /*condition:LLVMValueRef*/ cond_end,whi_body/*ifTrue:LLVMBasicBlockRef*/,next_block/*ifFalse:LLVMBasicBlockRef*/);
+
+            LLVMPositionBuilderAtEnd(builder, whi_body);
+            LLVMBuildBr(builder,con_block);
+
+            LLVMPositionBuilderAtEnd(builder,next_block);
 
         }
         return null;

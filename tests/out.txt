@@ -7,38 +7,20 @@ define i32 @main() {
 mainEntry:
   br label %condition
 
-condition:                                        ; preds = %mainEntry
+condition:                                        ; preds = %while_body, %mainEntry
   %a = load i32, i32* @a, align 4
-  %ne = icmp ne i32 %a, 10
-  %cond7 = zext i1 %ne to i32
-  %cond8 = icmp ne i32 0, %cond7
-  br i1 %cond8, label %the_true, label %the_false
+  %gt = icmp sgt i32 %a, 1
+  %cond = zext i1 %gt to i32
+  %cond2 = icmp ne i32 0, %cond
+  br i1 %cond2, label %while_body, label %next_block
 
-the_true:                                         ; preds = %condition
-  br label %condition1
-  br label %the_next
+while_body:                                       ; preds = %condition
+  %a1 = load i32, i32* @a, align 4
+  %subtmp = sub i32 %a1, 1
+  store i32 %subtmp, i32* @a, align 4
+  br label %condition
 
-the_false:                                        ; preds = %condition
-  store i32 20, i32* @a, align 4
-  br label %the_next
-
-the_next:                                         ; preds = %the_false, %the_true
-  %a9 = load i32, i32* @a, align 4
-  ret i32 %a9
-
-condition1:                                       ; preds = %the_true
-  %a2 = load i32, i32* @a, align 4
-  %eq = icmp eq i32 %a2, 2
-  %cond = zext i1 %eq to i32
-  %cond6 = icmp ne i32 0, %cond
-  br i1 %cond6, label %the_true3, label %the_false4
-
-the_true3:                                        ; preds = %condition1
-  store i32 4, i32* @a, align 4
-  br label %the_next5
-
-the_false4:                                       ; preds = %condition1
-
-the_next5:                                        ; preds = %the_true3
-  store i32 6, i32* @a, align 4
+next_block:                                       ; preds = %condition
+  %a3 = load i32, i32* @a, align 4
+  ret i32 %a3
 }
