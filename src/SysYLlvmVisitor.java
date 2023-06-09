@@ -115,6 +115,13 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
 
         llvmSymbolTable.enterScope();
 
+        if(ctx.funcFParams()!=null){
+            for(int m=0;m<ctx.funcFParams().funcFParam().size();++m){
+                LLVMValueRef pointer = LLVMBuildAlloca(builder, i32Type, /*pointerName:String*/ctx.funcFParams().funcFParam(m).IDENT().getText());
+                llvmSymbolTable.addEntry(ctx.funcFParams().funcFParam(m).IDENT().getText(),pointer,0);
+            }
+        }
+
         visit(ctx.block());
         llvmSymbolTable.exitScope();
         return null;

@@ -5,6 +5,7 @@ source_filename = "moudle"
 
 define i32 @main(i32 %0) {
 mainEntry:
+  %s = alloca i32, align 4
   %a = alloca i32, align 4
   store i32 2, i32* %a, align 4
   %b = alloca i32, align 4
@@ -13,8 +14,8 @@ mainEntry:
   %x = alloca i32, align 4
   store i32 1, i32* %x, align 4
   store i32 3, i32* %x, align 4
-  %x2 = load i32, i32* %x, align 4
-  %addtmp = add i32 1, %x2
+  %s2 = load i32, i32* %s, align 4
+  %addtmp = add i32 1, %s2
   ret i32 %addtmp
 }
 
