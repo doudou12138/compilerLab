@@ -203,7 +203,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             LLVMValueRef value = visitExp(ctx.exp());
             LLVMBuildStore(builder,value,entry.getLLValue());
         }else if(ctx.IF()!=null){
-            block = blocks.pop();
+
             LLVMBasicBlockRef con_block = LLVMAppendBasicBlock(func_now,"condition");
             LLVMBuildBr(builder,con_block);
 
@@ -223,6 +223,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             blocks.push(trueBlock);
             visitStmt(ctx.stmt(0));
             blocks.pop();
+            LLVMPositionBuilderAtEnd(builder,trueBlock);
             LLVMBuildBr(builder,next_block);
 
             if(ctx.ELSE()!=null){
