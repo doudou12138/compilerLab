@@ -1,26 +1,18 @@
 ; ModuleID = 'moudle'
 source_filename = "moudle"
 
-@a = global i32 10
+define i32 @f(i32 %0) {
+fEntry:
+  %i = alloca i32, align 4
+  %i1 = load i32, i32* %i, align 4
+  ret i32 %i1
+}
 
 define i32 @main() {
 mainEntry:
-  br label %condition
-
-condition:                                        ; preds = %mainEntry
-  %a = load i32, i32* @a, align 4
-  %ne = icmp ne i32 %a, 10
-  br i1 %ne, label %the_true, label %the_false
-
-the_true:                                         ; preds = %condition
-  store i32 2, i32* @a, align 4
-  br label %the_next
-
-the_false:                                        ; preds = %condition
-  store i32 20, i32* @a, align 4
-  br label %the_next
-
-the_next:                                         ; preds = %the_false, %the_true
-  %a1 = load i32, i32* @a, align 4
-  ret i32 %a1
+  %a = alloca i32, align 4
+  store i32 1, i32* %a, align 4
+  %a1 = load i32, i32* %a, align 4
+  %callf = call i32 @f(i32 %a1)
+  ret i32 %callf
 }

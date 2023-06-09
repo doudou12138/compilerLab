@@ -295,7 +295,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                     }
                     result = LLVMBuildCall(builder,func,new PointerPointer<>(args),ctx.funcRParams().param().size(),"call"+ctx.IDENT().getText());
                 }
-                LLVMBuildRet(builder,result);
+
                 return result;
             }else{
                 return null;
