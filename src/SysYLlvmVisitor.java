@@ -208,9 +208,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             LLVMBuildBr(builder,con_block);
 
             LLVMPositionBuilderAtEnd(builder,con_block);
-            blocks.push(con_block);
             LLVMValueRef cond = visitCond(ctx.cond());
-            blocks.pop();
 
             LLVMBasicBlockRef trueBlock = LLVMAppendBasicBlock(func_now,"the_true");
 
@@ -220,18 +218,16 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
 
             LLVMPositionBuilderAtEnd(builder,trueBlock);
 
-            blocks.push(trueBlock);
+
             visitStmt(ctx.stmt(0));
-            blocks.pop();
+
             LLVMPositionBuilderAtEnd(builder,trueBlock);
             LLVMBuildBr(builder,next_block);
 
             if(ctx.ELSE()!=null){
 
                 LLVMPositionBuilderAtEnd(builder,falseBlock);
-                blocks.push(falseBlock);
                 visitStmt(ctx.stmt(1));
-                blocks.pop();
                 LLVMBuildBr(builder,next_block);
 
             }
@@ -245,6 +241,8 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             //选择要在哪个基本块后追加指令
             LLVMPositionBuilderAtEnd(builder, next_block);//后续生成的指令将追加在block1的后面
 
+            blocks.pop();
+            blocks.push(next_block);
         }else if(ctx.WHILE()!=null){
             LLVMBasicBlockRef con_block = LLVMAppendBasicBlock(func_now,"condition");
             LLVMBasicBlockRef whi_body = LLVMAppendBasicBlock(func_now,"while_body");
@@ -253,13 +251,20 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             LLVMBuildBr(builder,con_block);
 
             LLVMPositionBuilderAtEnd(builder,con_block);
+            blocks.push(whi_body);
             blocks.push(con_block);
+            blocks.push(next_block);
+            blocks.push(whi_body);
+
             LLVMValueRef cond = visitCond(ctx.cond());
-            blocks.pop();
 
             LLVMPositionBuilderAtEnd(builder,whi_body);
-            blocks.push(whi_body);
+
             visitStmt(ctx.stmt(0));
+
+            LLVMBasicBlockRef whi_end = blocks.pop();
+            blocks.pop();
+            blocks.pop();
             blocks.pop();
 
             LLVMPositionBuilderAtEnd(builder,con_block);
@@ -268,11 +273,23 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             LLVMValueRef cond_end = LLVMBuildICmp(builder,LLVMIntNE,LLVMConstInt(i32Type,0,0),cond_b,"cond");
             LLVMBuildCondBr(builder, /*condition:LLVMValueRef*/ cond_end,whi_body/*ifTrue:LLVMBasicBlockRef*/,next_block/*ifFalse:LLVMBasicBlockRef*/);
 
-            LLVMPositionBuilderAtEnd(builder, whi_body);
+            LLVMPositionBuilderAtEnd(builder, whi_end);
             LLVMBuildBr(builder,con_block);
 
             LLVMPositionBuilderAtEnd(builder,next_block);
+            blocks.pop();
+            blocks.push(next_block);
 
+        }else if(ctx.BREAK()!=null){
+            LLVMBasicBlockRef the_next = blocks.pop();
+            LLVMBuildBr(builder, the_next);
+            blocks.push(the_next);
+        }else if(ctx.CONTINUE()!=null){
+            LLVMBasicBlockRef the_next = blocks.pop();
+            LLVMBasicBlockRef con = blocks.pop();
+            LLVMBuildBr(builder,con);
+            blocks.push(con);
+            blocks.push(the_next);
         }
         return null;
     }

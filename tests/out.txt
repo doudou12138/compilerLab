@@ -1,26 +1,47 @@
 ; ModuleID = 'moudle'
 source_filename = "moudle"
 
-@a = global i32 10
-
 define i32 @main() {
 mainEntry:
+  %a = alloca i32, align 4
+  store i32 0, i32* %a, align 4
+  %count = alloca i32, align 4
+  store i32 0, i32* %count, align 4
   br label %condition
 
-condition:                                        ; preds = %while_body, %mainEntry
-  %a = load i32, i32* @a, align 4
-  %gt = icmp sgt i32 %a, 1
-  %cond = zext i1 %gt to i32
-  %cond2 = icmp ne i32 0, %cond
-  br i1 %cond2, label %while_body, label %next_block
+condition:                                        ; preds = %the_next, %mainEntry
+  %a1 = load i32, i32* %a, align 4
+  %le = icmp sle i32 %a1, 0
+  %cond7 = zext i1 %le to i32
+  %cond8 = icmp ne i32 0, %cond7
+  br i1 %cond8, label %while_body, label %next_block
 
-while_body:                                       ; preds = %condition
-  %a1 = load i32, i32* @a, align 4
-  %subtmp = sub i32 %a1, 1
-  store i32 %subtmp, i32* @a, align 4
-  br label %condition
+while_body:                                       ; preds = %condition, %the_true
+  %a2 = load i32, i32* %a, align 4
+  %subtmp = sub i32 %a2, 1
+  store i32 %subtmp, i32* %a, align 4
+  %count3 = load i32, i32* %count, align 4
+  %addtmp = add i32 %count3, 1
+  store i32 %addtmp, i32* %count, align 4
+  br label %condition4
 
 next_block:                                       ; preds = %condition
-  %a3 = load i32, i32* @a, align 4
-  ret i32 %a3
+  %count9 = load i32, i32* %count, align 4
+  ret i32 %count9
+
+condition4:                                       ; preds = %while_body
+  %a5 = load i32, i32* %a, align 4
+  %lt = icmp slt i32 %a5, -20
+  %cond = zext i1 %lt to i32
+  %cond6 = icmp ne i32 0, %cond
+  br i1 %cond6, label %the_true, label %the_false
+
+the_true:                                         ; preds = %condition4
+  br label %while_body
+  br label %the_next
+
+the_false:                                        ; preds = %condition4
+
+the_next:                                         ; preds = %the_true
+  br label %condition
 }
