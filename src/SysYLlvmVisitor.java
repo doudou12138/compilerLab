@@ -22,8 +22,8 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
 
     LLVMSymbolTable llvmSymbolTable = null;
 
-    LLVMBasicBlockRef con = null;
-    LLVMBasicBlockRef ne_block=null;
+    Stack<LLVMBasicBlockRef> con = null;
+    Stack<LLVMBasicBlockRef> ne_block=null;
 
     public SysYLlvmVisitor(){
         llvmSymbolTable=new LLVMSymbolTable();
@@ -42,6 +42,8 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
         i32Type = LLVMInt32Type();
 
         blocks = new Stack<>();
+        con = new Stack<>();
+        ne_block = new Stack<>();
     }
 
     @Override
@@ -235,7 +237,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                 LLVMBuildBr(builder,next_block);
             }else{
                 LLVMPositionBuilderAtEnd(builder,falseBlock);
-                LLVMBuildBr(builder,ne_block);
+                LLVMBuildBr(builder,next_block);
             }
 
 
@@ -254,8 +256,8 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             LLVMBasicBlockRef whi_body = LLVMAppendBasicBlock(func_now,"while_body");
             LLVMBasicBlockRef next_block =LLVMAppendBasicBlock(func_now,"next_block");
 
-            con = con_block;
-            ne_block =next_block;
+            con.push(con_block);
+            ne_block.push(next_block);
 
             LLVMPositionBuilderAtEnd(builder,blocks.pop());
             LLVMBuildBr(builder,con_block);
@@ -284,9 +286,9 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             blocks.push(next_block);
 
         }else if(ctx.BREAK()!=null){
-            LLVMBuildBr(builder,ne_block);
+            LLVMBuildBr(builder,ne_block.pop());
         }else if(ctx.CONTINUE()!=null){
-            LLVMBuildBr(builder,con);
+            LLVMBuildBr(builder,con.pop());
         }
         return null;
     }

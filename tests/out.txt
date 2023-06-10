@@ -20,9 +20,9 @@ the_true:                                         ; preds = %condition
   br label %condition2
 
 the_false:                                        ; preds = %condition
-  br label %next_block8
+  br label %the_next
 
-the_next:                                         ; preds = %next_block
+the_next:                                         ; preds = %the_false, %next_block
   %count21 = load i32, i32* %count, align 4
   ret i32 %count21
 
@@ -58,7 +58,7 @@ while_body7:                                      ; preds = %condition6
   store i32 %addtmp14, i32* %count, align 4
   br label %condition6
 
-next_block8:                                      ; preds = %the_false, %condition6
+next_block8:                                      ; preds = %condition6
   %count15 = load i32, i32* %count, align 4
   %addtmp16 = add i32 %count15, 1
   store i32 %addtmp16, i32* %count, align 4
