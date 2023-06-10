@@ -4,7 +4,7 @@ int main(){
     while(a<=0){
         a=a-1;
         count=count+1;
-        if(a<-20)
+        if(a<-20&&a>-40)
             break;
     }
     return count;

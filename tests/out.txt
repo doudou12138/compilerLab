@@ -16,7 +16,7 @@ condition:                                        ; preds = %the_next, %mainEntr
   %cond8 = icmp ne i32 0, %cond7
   br i1 %cond8, label %while_body, label %next_block
 
-while_body:                                       ; preds = %condition, %the_true
+while_body:                                       ; preds = %condition
   %a2 = load i32, i32* %a, align 4
   %subtmp = sub i32 %a2, 1
   store i32 %subtmp, i32* %a, align 4
@@ -25,19 +25,22 @@ while_body:                                       ; preds = %condition, %the_tru
   store i32 %addtmp, i32* %count, align 4
   br label %condition4
 
-next_block:                                       ; preds = %condition
+next_block:                                       ; preds = %condition, %the_true
   %count9 = load i32, i32* %count, align 4
   ret i32 %count9
 
 condition4:                                       ; preds = %while_body
   %a5 = load i32, i32* %a, align 4
   %lt = icmp slt i32 %a5, -20
-  %cond = zext i1 %lt to i32
-  %cond6 = icmp ne i32 0, %cond
-  br i1 %cond6, label %the_true, label %the_false
+  %cmp = icmp eq i1 %lt, i32 0
+  %a6 = load i32, i32* %a, align 4
+  %gt = icmp sgt i32 %a6, -40
+  %result = select i1 %cmp, i32 0, i1 %gt
+  %cond = icmp ne i32 0, %result
+  br i1 %cond, label %the_true, label %the_false
 
 the_true:                                         ; preds = %condition4
-  br label %while_body
+  br label %next_block
   br label %the_next
 
 the_false:                                        ; preds = %condition4

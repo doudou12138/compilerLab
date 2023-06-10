@@ -304,25 +304,40 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             return visitExp(ctx.exp());
         } else {
             LLVMValueRef cond = null;
-            LLVMValueRef cond1 = visitCond(ctx.cond(0));
-            LLVMValueRef cond2 = visitCond(ctx.cond(1));
-            if (ctx.LT() != null) {
-                cond = LLVMBuildICmp(builder,LLVMIntSLT,cond1,cond2,"lt");
-            }else if(ctx.GT()!=null){
-                cond = LLVMBuildICmp(builder,LLVMIntSGT,cond1,cond2,"gt");
-            }else if(ctx.GE()!=null){
-                cond = LLVMBuildICmp(builder,LLVMIntSGE,cond1,cond2,"ge");
-            }else if(ctx.LE()!=null){
-                cond = LLVMBuildICmp(builder,LLVMIntSLE,cond1,cond2,"le");
-            }else if(ctx.EQ()!=null){
-                cond = LLVMBuildICmp(builder,LLVMIntEQ,cond1,cond2,"eq");
-            }else if(ctx.NEQ()!=null){
-                cond = LLVMBuildICmp(builder,LLVMIntNE,cond1,cond2,"ne");
-            }else if(ctx.AND()!=null){
-                cond = LLVMBuildICmp(builder,LLVMAnd,cond1,cond2,"and");
+            LLVMValueRef cond1 = null;
+            LLVMValueRef cond2 = null;
+
+            cond1 = visitCond(ctx.cond(0));
+            if(ctx.AND()!=null){
+                LLVMValueRef isEqualToZero = LLVMBuildICmp(builder, LLVMIntEQ, cond1, LLVMConstInt(LLVMInt32Type(), 0, 0), "cmp");
+
+                LLVMValueRef result = LLVMBuildSelect(builder, isEqualToZero, LLVMConstInt(LLVMInt32Type(), 0, 0), visitCond(ctx.cond(1)), "result");
+                return result;
             }else if(ctx.OR()!=null){
-                cond = LLVMBuildICmp(builder,LLVMOr,cond1,cond2,"or");
+                LLVMValueRef isEqualONe = LLVMBuildICmp(builder,LLVMIntNE,cond1,LLVMConstInt(LLVMInt32Type(),0,0),"cmp");
+                LLVMValueRef result = LLVMBuildSelect(builder,isEqualONe,LLVMConstInt(LLVMInt32Type(),1,0),visitCond(ctx.cond(1)),"result");
+                return result;
+            }else{
+                cond2 = visitCond(ctx.cond(1));
+
+                if (ctx.LT() != null) {
+                    cond = LLVMBuildICmp(builder,LLVMIntSLT,cond1,cond2,"lt");
+                }else if(ctx.GT()!=null){
+                    cond = LLVMBuildICmp(builder,LLVMIntSGT,cond1,cond2,"gt");
+                }else if(ctx.GE()!=null){
+                    cond = LLVMBuildICmp(builder,LLVMIntSGE,cond1,cond2,"ge");
+                }else if(ctx.LE()!=null){
+                    cond = LLVMBuildICmp(builder,LLVMIntSLE,cond1,cond2,"le");
+                }else if(ctx.EQ()!=null){
+                    cond = LLVMBuildICmp(builder,LLVMIntEQ,cond1,cond2,"eq");
+                }else if(ctx.NEQ()!=null){
+                    cond = LLVMBuildICmp(builder,LLVMIntNE,cond1,cond2,"ne");
+                }else {
+
+                }
             }
+
+
             return cond;
         }
     }
