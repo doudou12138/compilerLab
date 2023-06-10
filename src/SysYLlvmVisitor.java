@@ -4,6 +4,7 @@ import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.PointerPointer;
 import org.bytedeco.llvm.LLVM.*;
 
+import javax.swing.plaf.basic.BasicButtonUI;
 import java.util.List;
 import java.util.Stack;
 
@@ -231,6 +232,10 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                 LLVMBuildBr(builder,next_block);
 
             }
+
+            LLVMPositionBuilderAtEnd(builder,falseBlock);
+            LLVMBuildBr(builder,next_block);
+
 
             LLVMPositionBuilderAtEnd(builder,con_block);
             //条件跳转指令，选择跳转到哪个块
