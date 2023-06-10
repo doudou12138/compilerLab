@@ -1,66 +1,32 @@
 ; ModuleID = 'moudle'
 source_filename = "moudle"
 
+define i32 @f(i32 %0) {
+fEntry:
+  %a = alloca i32, align 4
+  store i32 %0, i32* %a, align 4
+  %x = alloca i32, align 4
+  %a1 = load i32, i32* %a, align 4
+  store i32 %a1, i32* %x, align 4
+  %x2 = load i32, i32* %x, align 4
+  ret i32 %x2
+}
+
+define void @gg() {
+ggEntry:
+  %x = alloca i32, align 4
+  store i32 2, i32* %x, align 4
+  %x1 = load i32, i32* %x, align 4
+  %addtmp = add i32 %x1, 1
+  store i32 %addtmp, i32* %x, align 4
+  ret void
+}
+
 define i32 @main() {
 mainEntry:
   %a = alloca i32, align 4
-  store i32 0, i32* %a, align 4
-  %count = alloca i32, align 4
-  store i32 0, i32* %count, align 4
-  br label %condition
-
-condition:                                        ; preds = %mainEntry
+  store i32 1, i32* %a, align 4
   %a1 = load i32, i32* %a, align 4
-  %eq = icmp eq i32 %a1, 0
-  %cond19 = zext i1 %eq to i32
-  %cond20 = icmp ne i32 0, %cond19
-  br i1 %cond20, label %the_true, label %the_false
-
-the_true:                                         ; preds = %condition
-  br label %condition2
-
-the_false:                                        ; preds = %condition
-  br label %the_next
-
-the_next:                                         ; preds = %the_false, %next_block
-  %count21 = load i32, i32* %count, align 4
-  ret i32 %count21
-
-condition2:                                       ; preds = %next_block8, %the_true
-  %a3 = load i32, i32* %a, align 4
-  %lt = icmp slt i32 %a3, 100
-  %cond = zext i1 %lt to i32
-  %cond4 = icmp ne i32 0, %cond
-  br i1 %cond4, label %while_body, label %next_block
-
-while_body:                                       ; preds = %condition2
-  %a5 = load i32, i32* %a, align 4
-  %addtmp = add i32 %a5, 1
-  store i32 %addtmp, i32* %a, align 4
-  br label %condition6
-
-next_block:                                       ; preds = %condition2
-  %a17 = load i32, i32* %a, align 4
-  %addtmp18 = add i32 %a17, 1
-  store i32 %addtmp18, i32* %a, align 4
-  br label %the_next
-
-condition6:                                       ; preds = %while_body7, %while_body
-  %count9 = load i32, i32* %count, align 4
-  %lt10 = icmp slt i32 %count9, 100
-  %cond11 = zext i1 %lt10 to i32
-  %cond12 = icmp ne i32 0, %cond11
-  br i1 %cond12, label %while_body7, label %next_block8
-
-while_body7:                                      ; preds = %condition6
-  %count13 = load i32, i32* %count, align 4
-  %addtmp14 = add i32 %count13, 1
-  store i32 %addtmp14, i32* %count, align 4
-  br label %condition6
-
-next_block8:                                      ; preds = %condition6
-  %count15 = load i32, i32* %count, align 4
-  %addtmp16 = add i32 %count15, 1
-  store i32 %addtmp16, i32* %count, align 4
-  br label %condition2
+  %callf = call i32 @f(i32 %a1)
+  ret i32 %callf
 }

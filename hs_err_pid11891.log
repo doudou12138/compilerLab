@@ -1,0 +1,153 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00007f45ca156daa, pid=11891, tid=11892
+#
+# JRE version: OpenJDK Runtime Environment (11.0.19+7) (build 11.0.19+7-post-Ubuntu-0ubuntu122.04.1)
+# Java VM: OpenJDK 64-Bit Server VM (11.0.19+7-post-Ubuntu-0ubuntu122.04.1, mixed mode, sharing, tiered, compressed oops, g1 gc, linux-amd64)
+# Problematic frame:
+# C  [libLLVM-13.so+0xd56daa]  llvm::FunctionType::get(llvm::Type*, llvm::ArrayRef<llvm::Type*>, bool)+0x1a
+#
+# Core dump will be written. Default location: Core dumps may be processed with "/usr/share/apport/apport -p%p -s%s -c%c -d%d -P%P -u%u -g%g -- %E" (or dumping to /home/doudou/lab/Lab/core.11891)
+#
+# If you would like to submit a bug report, please visit:
+#   https://bugs.launchpad.net/ubuntu/+source/openjdk-lts
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: -agentlib:jdwp=transport=dt_socket,address=127.0.0.1:40601,suspend=y,server=n -javaagent:/snap/intellij-idea-ultimate/430/plugins/java/lib/rt/debugger-agent.jar -Dfile.encoding=UTF-8 Main /home/doudou/lab/Lab/tests/test1.sysy /home/doudou/lab/Lab/tests/out.txt
+
+Host: 11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz, 2 cores, 3G, Ubuntu 22.04.2 LTS
+Time: Sat Jun 10 21:39:24 2023 CST elapsed time: 36.219263 seconds (0d 0h 0m 36s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007f4628019800):  JavaThread "main" [_thread_in_native, id=11892, stack(0x00007f462e300000,0x00007f462e400000)]
+
+Stack: [0x00007f462e300000,0x00007f462e400000],  sp=0x00007f462e3fe300,  free space=1016k
+Native frames: (J=compiled Java code, A=aot compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [libLLVM-13.so+0xd56daa]  llvm::FunctionType::get(llvm::Type*, llvm::ArrayRef<llvm::Type*>, bool)+0x1a
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  org.bytedeco.llvm.global.LLVM.LLVMFunctionType(Lorg/bytedeco/llvm/LLVM/LLVMTypeRef;Lorg/bytedeco/llvm/LLVM/LLVMTypeRef;II)Lorg/bytedeco/llvm/LLVM/LLVMTypeRef;+0
+j  SysYLlvmVisitor.visitFuncDef(LSysYParser$FuncDefContext;)Lorg/bytedeco/llvm/LLVM/LLVMValueRef;+33
+j  SysYLlvmVisitor.visitCompUnit(LSysYParser$CompUnitContext;)Lorg/bytedeco/llvm/LLVM/LLVMValueRef;+364
+j  SysYLlvmVisitor.visitCompUnit(LSysYParser$CompUnitContext;)Ljava/lang/Object;+2
+j  SysYParser$CompUnitContext.accept(Lorg/antlr/v4/runtime/tree/ParseTreeVisitor;)Ljava/lang/Object;+12
+j  org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visitChildren(Lorg/antlr/v4/runtime/tree/RuleNode;)Ljava/lang/Object;+46
+j  SysYParserBaseVisitor.visitProgram(LSysYParser$ProgramContext;)Ljava/lang/Object;+2
+j  SysYParser$ProgramContext.accept(Lorg/antlr/v4/runtime/tree/ParseTreeVisitor;)Ljava/lang/Object;+12
+j  org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visit(Lorg/antlr/v4/runtime/tree/ParseTree;)Ljava/lang/Object;+2
+j  Main.main([Ljava/lang/String;)V+218
+v  ~StubRoutines::call_stub
+
+siginfo: si_signo: 11 (SIGSEGV), si_code: 1 (SEGV_MAPERR), si_addr: 0x0000000000000000
+
+Register to memory mapping:
+
+RAX=0x00007f45fdfbb220: Java_org_bytedeco_llvm_global_LLVM_LLVMFunctionType__Lorg_bytedeco_llvm_LLVM_LLVMTypeRef_2Lorg_bytedeco_llvm_LLVM_LLVMTypeRef_2II+0x0000000000000000 in /home/doudou/.javacpp/cache/llvm-13.0.1-1.5.7-linux-x86_64.jar/org/bytedeco/llvm/linux-x86_64/libjniLLVM.so at 0x00007f45fdefa000
+RBX=0x0 is NULL
+RCX=0x0 is NULL
+RDX=0x0 is NULL
+RSP=0x00007f462e3fe300 is pointing into the stack for thread: 0x00007f4628019800
+RBP=0x0 is NULL
+RSI=0x0 is NULL
+RDI=0x0 is NULL
+R8 =0x0 is NULL
+R9 =0x0 is NULL
+R10=0x00007f460f8154d4 is at code_begin+1652 in an Interpreter codelet
+method entry point (kind = native)  [0x00007f460f814e60, 0x00007f460f815e60]  4096 bytes
+R11=0x00000000c6d70400 points into unknown readable memory: 0x00000068837a7701 | 01 77 7a 83 68 00 00 00
+R12=0x0 is NULL
+R13=0x0 is NULL
+R14=0x0 is NULL
+R15=0x0 is NULL
+
+
+Registers:
+RAX=0x00007f45fdfbb220, RBX=0x0000000000000000, RCX=0x0000000000000000, RDX=0x0000000000000000
+RSP=0x00007f462e3fe300, RBP=0x0000000000000000, RSI=0x0000000000000000, RDI=0x0000000000000000
+R8 =0x0000000000000000, R9 =0x0000000000000000, R10=0x00007f460f8154d4, R11=0x00000000c6d70400
+R12=0x0000000000000000, R13=0x0000000000000000, R14=0x0000000000000000, R15=0x0000000000000000
+RIP=0x00007f45ca156daa, EFLAGS=0x0000000000010206, CSGSFS=0x002b000000000033, ERR=0x0000000000000004
+  TRAPNO=0x000000000000000e
+
+Top of Stack: (sp=0x00007f462e3fe300)
+0x00007f462e3fe300:   0000000000000000 00007f462e3fe378
+0x00007f462e3fe310:   00007f462e3fe360 00007f46172f058f
+0x00007f462e3fe320:   00000000c6f63060 00000000c6e35560
+0x00007f462e3fe330:   00007f462e3fe380 000000080036c8c0 
+
+Instructions: (pc=0x00007f45ca156daa)
+0x00007f45ca156caa:   4c 8d 14 0e 48 c1 c2 0c 48 c1 ce 07 49 03 4f e0
+0x00007f45ca156cba:   48 01 d6 4c 89 d2 48 01 f0 48 c1 ca 1f 48 8d 34
+0x00007f45ca156cca:   10 49 8b 57 e8 4a 8d 04 09 48 c1 c0 0c 48 01 ca
+0x00007f45ca156cda:   48 c1 c1 1b 48 01 e9 49 01 d3 48 c1 ca 07 48 01
+0x00007f45ca156cea:   c8 48 01 c2 4c 89 d8 48 c1 c8 1f 48 01 c2 4c 01
+0x00007f45ca156cfa:   d2 49 ba 4f 40 90 2f 3b 6a e1 9a 48 89 d1 4b 8d
+0x00007f45ca156d0a:   14 19 48 01 f2 49 0f af ca 48 0f af d7 48 01 ca
+0x00007f45ca156d1a:   48 89 d1 48 c1 e9 2f 48 31 ca 48 0f af d7 49 31
+0x00007f45ca156d2a:   d0 49 8d 14 30 48 89 d0 48 c1 e8 2f 48 31 d0 49
+0x00007f45ca156d3a:   0f af c2 e9 ab f9 ff ff 66 2e 0f 1f 84 00 00 00
+0x00007f45ca156d4a:   00 00 0f 1f 40 00 66 48 0f 6e c6 66 48 0f 6e ca
+0x00007f45ca156d5a:   66 0f 6c c1 0f 11 07 45 84 c0 75 29 48 39 d6 74
+0x00007f45ca156d6a:   24 0f 1f 44 00 00 48 8b 06 48 3d 00 f0 ff ff 74
+0x00007f45ca156d7a:   08 48 3d 00 e0 ff ff 75 0c 48 83 c6 08 48 89 37
+0x00007f45ca156d8a:   48 39 f2 75 e1 c3 41 57 41 56 41 55 49 89 fd 41
+0x00007f45ca156d9a:   54 49 89 d4 55 48 89 f5 53 48 81 ec a8 00 00 00
+0x00007f45ca156daa:   48 8b 07 89 4c 24 04 48 8b 18 88 4c 24 78 48 89
+0x00007f45ca156dba:   7c 24 60 44 8b 83 58 08 00 00 48 89 74 24 68 48
+0x00007f45ca156dca:   8d 8b 48 08 00 00 48 89 54 24 70 4c 8b b3 48 08
+0x00007f45ca156dda:   00 00 45 85 c0 0f 85 1b 03 00 00 43 8d 54 00 ff
+0x00007f45ca156dea:   be 08 00 00 00 48 89 4c 24 10 48 89 d0 44 89 44
+0x00007f45ca156dfa:   24 08 48 d1 e8 48 09 d0 48 89 c2 48 c1 ea 02 48
+0x00007f45ca156e0a:   09 d0 48 89 c2 48 c1 ea 04 48 09 d0 48 89 c2 48
+0x00007f45ca156e1a:   c1 ea 08 48 09 d0 48 89 c2 48 c1 ea 10 48 09 d0
+0x00007f45ca156e2a:   ba 40 00 00 00 48 83 c0 01 83 f8 40 0f 42 c2 89
+0x00007f45ca156e3a:   83 58 08 00 00 89 c0 48 8d 3c c5 00 00 00 00 e8
+0x00007f45ca156e4a:   02 e3 d9 ff 4d 85 f6 44 8b 44 24 08 48 8b 4c 24
+0x00007f45ca156e5a:   10 48 89 83 48 08 00 00 49 89 c2 0f 84 58 06 00
+0x00007f45ca156e6a:   00 8b 93 58 08 00 00 49 c1 e0 03 48 c7 83 50 08
+0x00007f45ca156e7a:   00 00 00 00 00 00 4f 8d 1c 06 48 c1 e2 03 48 8d
+0x00007f45ca156e8a:   04 10 49 39 c2 74 52 48 8d 72 f8 4c 89 d0 48 c1
+0x00007f45ca156e9a:   ee 03 48 83 c6 01 48 83 fa 08 74 36 48 89 f2 66 
+
+
+Stack slot to memory mapping:
+stack at sp + 0 slots: 0x0 is NULL
+stack at sp + 1 slots: 0x00007f462e3fe378 is pointing into the stack for thread: 0x00007f4628019800
+stack at sp + 2 slots: 0x00007f462e3fe360 is pointing into the stack for thread: 0x00007f4628019800
+stack at sp + 3 slots: 0x00007f46172f058f is at entry_point+207 in (nmethod*)0x00007f46172f0310
+stack at sp + 4 slots: 0x00000000c6f63060 points into unknown readable memory: 0x0000006fadae5d01 | 01 5d ae ad 6f 00 00 00
+stack at sp + 5 slots: 0x00000000c6e35560 is an oop: SysYParser$BlockContext 
+{0x00000000c6e35560} - klass: 'SysYParser$BlockContext'
+ - ---- fields (total size 5 words):
+ - public 'invokingState' 'I' @12  163 (a3)
+ - public 'parent' 'Lorg/antlr/v4/runtime/RuleContext;' @16  a 'SysYParser$FuncDefContext'{0x00000000c6e34528} (c6e34528)
+ - public strict 'children' 'Ljava/util/List;' @20  a 'java/util/ArrayList'{0x00000000c6e355d0} (c6e355d0)
+ - public 'start' 'Lorg/antlr/v4/runtime/Token;' @24  a 'org/antlr/v4/runtime/CommonToken'{0x00000000c6e35518} (c6e35518)
+ - public 'stop' 'Lorg/antlr/v4/runtime/Token;' @28  a 'org/antlr/v4/runtime/CommonToken'{0x00000000c6e43938} (c6e43938)
+ - public 'exception' 'Lorg/antlr/v4/runtime/RecognitionException;' @32  NULL (0)
+stack at sp + 6 slots: 0x00007f462e3fe380 is pointing into the stack for thread: 0x00007f4628019800
+stack at sp + 7 slots: 0x000000080036c8c0 is pointing into metadata
+
+
+---------------  P R O C E S S  ---------------
+
+Threads class SMR info:
+_java_thread_list=0x00007f45d000f5d0, length=11, elements={
+0x00007f4628019800, 0x00007f4628124000, 0x00007f4628126000, 0x00007f462812a800,
+0x00007f462812c800, 0x00007f462812e800, 0x00007f4628130800, 0x00007f4628132800,
+0x00007f4628140800, 0x00007f462818e000, 0x00007f4628211800
+}
+
+Java Threads: ( => current thread )
+=>0x00007f4628019800 JavaThread "main" [_thread_in_native, id=11892, stack(0x00007f462e300000,0x00007f462e400000)]
+  0x00007f4628124000 JavaThread "Reference Handler" daemon [_thread_blocked, id=11904, stack(0x00007f460cd8a000,0x00007f460ce8a000)]
+  0x00007f4628126000 JavaThread "Finalizer" daemon [_thread_blocked, id=11905, stack(0x00007f460cc8a000,0x00007f460cd8a000)]
+  0x00007f462812a800 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=11906, stack(0x00007f460cb8a000,0x00007f460cc8a000)]
+  0x00007f462812c800 JavaThread "Service Thread" daemon [_thread_blocked, id=11908, stack(0x00007f460ca8a000,0x00007f460cb8a000)]
+  0x00007f462812e800 

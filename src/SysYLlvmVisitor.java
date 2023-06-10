@@ -95,13 +95,16 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
     @Override
     public LLVMValueRef visitFuncDef(SysYParser.FuncDefContext ctx){
         //生成返回值类型
-        LLVMTypeRef returnType = i32Type;
+        LLVMTypeRef returnType = LLVMVoidType();
+        if(ctx.funcType().INT()!=null){
+            returnType = i32Type;
+        }
 
         LLVMTypeRef ft=null;
         if(ctx.funcFParams()==null){
             ft = LLVMFunctionType(returnType, (LLVMTypeRef) null, /* argumentCount */ 0, /* isVariadic */ 0);
         }else if(ctx.funcFParams().funcFParam()==null){
-
+            ft = LLVMFunctionType(returnType, (LLVMTypeRef) null, /* argumentCount */ 0, /* isVariadic */ 0);
         }else if(ctx.funcFParams().funcFParam().size()==1){
             ft = LLVMFunctionType(returnType, i32Type, /* argumentCount */ 1, /* isVariadic */ 0);
         }else{
@@ -141,6 +144,11 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
 
         visit(ctx.block());
         llvmSymbolTable.exitScope();
+
+        if(ctx.funcType().VOID()!=null){
+            LLVMPositionBuilderAtEnd(builder,block);
+            LLVMBuildRet(builder,null);
+        }
 
         return null;
     }
@@ -199,7 +207,9 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                 result = visitExp(ctx.exp());
             }
             //函数返回指令
-            LLVMBuildRet(builder, /*result:LLVMValueRef*/result);
+            if(result!=null) {
+                LLVMBuildRet(builder, /*result:LLVMValueRef*/result);
+            }
         }else if(ctx.block()!=null){
             llvmSymbolTable.enterScope();
             visitBlock(ctx.block());
