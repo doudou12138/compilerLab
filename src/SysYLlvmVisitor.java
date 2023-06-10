@@ -229,8 +229,6 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
 
                 LLVMPositionBuilderAtEnd(builder,falseBlock);
                 visitStmt(ctx.stmt(1));
-                LLVMBuildBr(builder,next_block);
-
             }
 
             LLVMPositionBuilderAtEnd(builder,falseBlock);

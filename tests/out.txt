@@ -11,41 +11,56 @@ mainEntry:
 
 condition:                                        ; preds = %mainEntry
   %a1 = load i32, i32* %a, align 4
-  %lt = icmp slt i32 %a1, 1
-  %cond12 = zext i1 %lt to i32
-  %cond13 = icmp ne i32 0, %cond12
-  br i1 %cond13, label %the_true, label %the_false
+  %eq = icmp eq i32 %a1, 0
+  %cond19 = zext i1 %eq to i32
+  %cond20 = icmp ne i32 0, %cond19
+  br i1 %cond20, label %the_true, label %the_false
 
 the_true:                                         ; preds = %condition
-  %count2 = load i32, i32* %count, align 4
-  %addtmp = add i32 %count2, 1
-  store i32 %addtmp, i32* %count, align 4
-  br label %condition3
+  br label %condition2
   br label %the_next
 
 the_false:                                        ; preds = %condition
+  br label %the_next
 
-the_next:                                         ; preds = %the_true
-  %count14 = load i32, i32* %count, align 4
-  ret i32 %count14
+the_next:                                         ; preds = %the_false, %the_true
+  %count21 = load i32, i32* %count, align 4
+  ret i32 %count21
 
-condition3:                                       ; preds = %the_true
+condition2:                                       ; preds = %next_block7, %the_true
+  %a3 = load i32, i32* %a, align 4
+  %lt = icmp slt i32 %a3, 100
+  %cond15 = zext i1 %lt to i32
+  %cond16 = icmp ne i32 0, %cond15
+  br i1 %cond16, label %while_body, label %next_block
+
+while_body:                                       ; preds = %condition2
   %a4 = load i32, i32* %a, align 4
-  %gt = icmp sgt i32 %a4, -5
-  %cond = zext i1 %gt to i32
-  %cond10 = icmp ne i32 0, %cond
-  br i1 %cond10, label %the_true5, label %the_false6
+  %addtmp = add i32 %a4, 1
+  store i32 %addtmp, i32* %a, align 4
+  br label %condition5
 
-the_true5:                                        ; preds = %condition3
-  %a8 = load i32, i32* %a, align 4
-  %addtmp9 = add i32 %a8, 1
-  store i32 %addtmp9, i32* %a, align 4
-  br label %the_next7
+next_block:                                       ; preds = %condition2
+  %a17 = load i32, i32* %a, align 4
+  %addtmp18 = add i32 %a17, 1
+  store i32 %addtmp18, i32* %a, align 4
 
-the_false6:                                       ; preds = %condition3
+condition5:                                       ; preds = %while_body6, %while_body
+  %count8 = load i32, i32* %count, align 4
+  %lt9 = icmp slt i32 %count8, 100
+  %cond = zext i1 %lt9 to i32
+  %cond12 = icmp ne i32 0, %cond
+  br i1 %cond12, label %while_body6, label %next_block7
 
-the_next7:                                        ; preds = %the_true5
-  %a11 = load i32, i32* %a, align 4
-  %subtmp = sub i32 %a11, 1
-  store i32 %subtmp, i32* %a, align 4
+while_body6:                                      ; preds = %condition5
+  %count10 = load i32, i32* %count, align 4
+  %addtmp11 = add i32 %count10, 1
+  store i32 %addtmp11, i32* %count, align 4
+  br label %condition5
+
+next_block7:                                      ; preds = %condition5
+  %count13 = load i32, i32* %count, align 4
+  %addtmp14 = add i32 %count13, 1
+  store i32 %addtmp14, i32* %count, align 4
+  br label %condition2
 }
