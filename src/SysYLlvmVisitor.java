@@ -281,15 +281,19 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             blocks.push(next_block);
 
         }else if(ctx.BREAK()!=null){
+            LLVMBasicBlockRef end = blocks.pop();
             LLVMBasicBlockRef the_next = blocks.pop();
             LLVMBuildBr(builder, the_next);
             blocks.push(the_next);
+            blocks.push(end);
         }else if(ctx.CONTINUE()!=null){
+            LLVMBasicBlockRef end = blocks.pop();
             LLVMBasicBlockRef the_next = blocks.pop();
             LLVMBasicBlockRef con = blocks.pop();
             LLVMBuildBr(builder,con);
             blocks.push(con);
             blocks.push(the_next);
+            blocks.push(end);
         }
         return null;
     }
