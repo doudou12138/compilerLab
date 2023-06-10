@@ -22,6 +22,9 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
 
     LLVMSymbolTable llvmSymbolTable = null;
 
+    LLVMBasicBlockRef con = null;
+    LLVMBasicBlockRef ne_block=null;
+
     public SysYLlvmVisitor(){
         llvmSymbolTable=new LLVMSymbolTable();
         //初始化LLVM
@@ -206,33 +209,34 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
         }else if(ctx.IF()!=null){
 
             LLVMBasicBlockRef con_block = LLVMAppendBasicBlock(func_now,"condition");
-            LLVMBuildBr(builder,con_block);
 
+            LLVMPositionBuilderAtEnd(builder,blocks.pop());
+            LLVMBuildBr(builder,con_block);
             LLVMPositionBuilderAtEnd(builder,con_block);
             LLVMValueRef cond = visitCond(ctx.cond());
 
             LLVMBasicBlockRef trueBlock = LLVMAppendBasicBlock(func_now,"the_true");
-
             LLVMBasicBlockRef falseBlock= LLVMAppendBasicBlock(func_now,"the_false");
             //通过如下语句在函数中加入基本块，一个函数可以加入多个基本块
             LLVMBasicBlockRef next_block = LLVMAppendBasicBlock(func_now, /*blockName:String*/"the_next");
 
             LLVMPositionBuilderAtEnd(builder,trueBlock);
-
-
+            blocks.push(trueBlock);
             visitStmt(ctx.stmt(0));
 
-            LLVMPositionBuilderAtEnd(builder,trueBlock);
+            LLVMPositionBuilderAtEnd(builder,blocks.pop());
             LLVMBuildBr(builder,next_block);
 
             if(ctx.ELSE()!=null){
-
                 LLVMPositionBuilderAtEnd(builder,falseBlock);
+                blocks.push(falseBlock);
                 visitStmt(ctx.stmt(1));
+                LLVMPositionBuilderAtEnd(builder,blocks.pop());
+                LLVMBuildBr(builder,next_block);
+            }else{
+                LLVMPositionBuilderAtEnd(builder,falseBlock);
+                LLVMBuildBr(builder,ne_block);
             }
-
-            LLVMPositionBuilderAtEnd(builder,falseBlock);
-            LLVMBuildBr(builder,next_block);
 
 
             LLVMPositionBuilderAtEnd(builder,con_block);
@@ -244,59 +248,45 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             //选择要在哪个基本块后追加指令
             LLVMPositionBuilderAtEnd(builder, next_block);//后续生成的指令将追加在block1的后面
 
-            blocks.pop();
             blocks.push(next_block);
         }else if(ctx.WHILE()!=null){
             LLVMBasicBlockRef con_block = LLVMAppendBasicBlock(func_now,"condition");
             LLVMBasicBlockRef whi_body = LLVMAppendBasicBlock(func_now,"while_body");
             LLVMBasicBlockRef next_block =LLVMAppendBasicBlock(func_now,"next_block");
 
+            con = con_block;
+            ne_block =next_block;
+
+            LLVMPositionBuilderAtEnd(builder,blocks.pop());
             LLVMBuildBr(builder,con_block);
 
             LLVMPositionBuilderAtEnd(builder,con_block);
-            blocks.push(whi_body);
+
             blocks.push(con_block);
-            blocks.push(next_block);
-            blocks.push(whi_body);
-
             LLVMValueRef cond = visitCond(ctx.cond());
-
-            LLVMPositionBuilderAtEnd(builder,whi_body);
-
-            visitStmt(ctx.stmt(0));
-
-            LLVMBasicBlockRef whi_end = blocks.pop();
-            blocks.pop();
-            blocks.pop();
-            blocks.pop();
-
             LLVMPositionBuilderAtEnd(builder,con_block);
             //条件跳转指令，选择跳转到哪个块
             LLVMValueRef cond_b = LLVMBuildZExt(builder,cond,i32Type,"cond");
             LLVMValueRef cond_end = LLVMBuildICmp(builder,LLVMIntNE,LLVMConstInt(i32Type,0,0),cond_b,"cond");
             LLVMBuildCondBr(builder, /*condition:LLVMValueRef*/ cond_end,whi_body/*ifTrue:LLVMBasicBlockRef*/,next_block/*ifFalse:LLVMBasicBlockRef*/);
 
-            LLVMPositionBuilderAtEnd(builder, whi_end);
+            LLVMPositionBuilderAtEnd(builder,whi_body);
+            blocks.pop();
+            blocks.push(whi_body);
+            visitStmt(ctx.stmt(0));
+
+            LLVMBasicBlockRef whi_body_end = blocks.pop();
+
+            LLVMPositionBuilderAtEnd(builder, whi_body_end);
             LLVMBuildBr(builder,con_block);
 
             LLVMPositionBuilderAtEnd(builder,next_block);
-            blocks.pop();
             blocks.push(next_block);
 
         }else if(ctx.BREAK()!=null){
-            LLVMBasicBlockRef end = blocks.pop();
-            LLVMBasicBlockRef the_next = blocks.pop();
-            LLVMBuildBr(builder, the_next);
-            blocks.push(the_next);
-            blocks.push(end);
+            LLVMBuildBr(builder,ne_block);
         }else if(ctx.CONTINUE()!=null){
-            LLVMBasicBlockRef end = blocks.pop();
-            LLVMBasicBlockRef the_next = blocks.pop();
-            LLVMBasicBlockRef con = blocks.pop();
             LLVMBuildBr(builder,con);
-            blocks.push(con);
-            blocks.push(the_next);
-            blocks.push(end);
         }
         return null;
     }

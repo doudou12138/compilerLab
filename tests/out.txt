@@ -18,49 +18,49 @@ condition:                                        ; preds = %mainEntry
 
 the_true:                                         ; preds = %condition
   br label %condition2
-  br label %the_next
 
 the_false:                                        ; preds = %condition
-  br label %the_next
+  br label %next_block8
 
-the_next:                                         ; preds = %the_false, %the_true
+the_next:                                         ; preds = %next_block
   %count21 = load i32, i32* %count, align 4
   ret i32 %count21
 
-condition2:                                       ; preds = %next_block7, %the_true
+condition2:                                       ; preds = %next_block8, %the_true
   %a3 = load i32, i32* %a, align 4
   %lt = icmp slt i32 %a3, 100
-  %cond15 = zext i1 %lt to i32
-  %cond16 = icmp ne i32 0, %cond15
-  br i1 %cond16, label %while_body, label %next_block
+  %cond = zext i1 %lt to i32
+  %cond4 = icmp ne i32 0, %cond
+  br i1 %cond4, label %while_body, label %next_block
 
 while_body:                                       ; preds = %condition2
-  %a4 = load i32, i32* %a, align 4
-  %addtmp = add i32 %a4, 1
+  %a5 = load i32, i32* %a, align 4
+  %addtmp = add i32 %a5, 1
   store i32 %addtmp, i32* %a, align 4
-  br label %condition5
+  br label %condition6
 
 next_block:                                       ; preds = %condition2
   %a17 = load i32, i32* %a, align 4
   %addtmp18 = add i32 %a17, 1
   store i32 %addtmp18, i32* %a, align 4
+  br label %the_next
 
-condition5:                                       ; preds = %while_body6, %while_body
-  %count8 = load i32, i32* %count, align 4
-  %lt9 = icmp slt i32 %count8, 100
-  %cond = zext i1 %lt9 to i32
-  %cond12 = icmp ne i32 0, %cond
-  br i1 %cond12, label %while_body6, label %next_block7
+condition6:                                       ; preds = %while_body7, %while_body
+  %count9 = load i32, i32* %count, align 4
+  %lt10 = icmp slt i32 %count9, 100
+  %cond11 = zext i1 %lt10 to i32
+  %cond12 = icmp ne i32 0, %cond11
+  br i1 %cond12, label %while_body7, label %next_block8
 
-while_body6:                                      ; preds = %condition5
-  %count10 = load i32, i32* %count, align 4
-  %addtmp11 = add i32 %count10, 1
-  store i32 %addtmp11, i32* %count, align 4
-  br label %condition5
-
-next_block7:                                      ; preds = %condition5
+while_body7:                                      ; preds = %condition6
   %count13 = load i32, i32* %count, align 4
   %addtmp14 = add i32 %count13, 1
   store i32 %addtmp14, i32* %count, align 4
+  br label %condition6
+
+next_block8:                                      ; preds = %the_false, %condition6
+  %count15 = load i32, i32* %count, align 4
+  %addtmp16 = add i32 %count15, 1
+  store i32 %addtmp16, i32* %count, align 4
   br label %condition2
 }
