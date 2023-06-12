@@ -316,6 +316,8 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             LLVMBuildBr(builder,ne_block.pop());
         }else if(ctx.CONTINUE()!=null){
             LLVMBuildBr(builder,con.pop());
+        }else if(ctx.exp()!=null){
+            visitExp(ctx.exp());
         }
         return null;
     }

@@ -1,30 +1,16 @@
 ; ModuleID = 'moudle'
 source_filename = "moudle"
 
-define i32 @main() {
+define void @main() {
 mainEntry:
   %a = alloca i32, align 4
-  store i32 2, i32* %a, align 4
-  br label %condition
-
-condition:                                        ; preds = %mainEntry
-  %a1 = load i32, i32* %a, align 4
-  %cmp = icmp eq i32 %a1, 0
-  br i1 %cmp, label %conl_false, label %conl_true
-  br i1 false, label %the_true, label %the_false
-
-the_true:                                         ; preds = %condition, %conl_true
   store i32 1, i32* %a, align 4
-  br label %the_next
+  store i32 2, i32* %a, align 4
+  ret void
+}
 
-the_false:                                        ; preds = %condition, %conl_true, %conl_false
-  br label %the_next
-
-conl_true:                                        ; preds = %condition
-  br i1 false, label %the_true, label %the_false
-
-conl_false:                                       ; preds = %condition
-  br label %the_false
-
-the_next:                                         ; preds = %the_false, %the_true
+define i32 @main1() {
+main1Entry:
+  %callmain = call void @main()
+  ret i32 1
 }
