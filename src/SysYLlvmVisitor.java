@@ -24,6 +24,8 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
 
     Stack<LLVMBasicBlockRef> con = null;
     Stack<LLVMBasicBlockRef> ne_block=null;
+    Stack<LLVMBasicBlockRef> con_true_ne = null;
+    Stack<LLVMBasicBlockRef> con_f_ne = null;
 
     public SysYLlvmVisitor(){
         llvmSymbolTable=new LLVMSymbolTable();
@@ -44,6 +46,8 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
         blocks = new Stack<>();
         con = new Stack<>();
         ne_block = new Stack<>();
+        con_true_ne = new Stack<>();
+        con_f_ne = new Stack<>();
     }
 
     @Override
@@ -225,10 +229,19 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             LLVMPositionBuilderAtEnd(builder,blocks.pop());
             LLVMBuildBr(builder,con_block);
             LLVMPositionBuilderAtEnd(builder,con_block);
-            LLVMValueRef cond = visitCond(ctx.cond());
 
             LLVMBasicBlockRef trueBlock = LLVMAppendBasicBlock(func_now,"the_true");
             LLVMBasicBlockRef falseBlock= LLVMAppendBasicBlock(func_now,"the_false");
+
+            blocks.push(con_block);
+            con_true_ne.push(trueBlock);
+            con_f_ne.push(falseBlock);
+            LLVMValueRef cond = visitCond(ctx.cond());
+            con_true_ne.pop();
+            con_f_ne.pop();
+            blocks.pop();
+
+
             //通过如下语句在函数中加入基本块，一个函数可以加入多个基本块
             LLVMBasicBlockRef next_block = LLVMAppendBasicBlock(func_now, /*blockName:String*/"the_next");
 
@@ -274,7 +287,13 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             LLVMPositionBuilderAtEnd(builder,con_block);
 
             blocks.push(con_block);
+            con_true_ne.push(whi_body);
+            con_f_ne.push(next_block);
             LLVMValueRef cond = visitCond(ctx.cond());
+            con_f_ne.pop();
+            con_true_ne.pop();
+            blocks.pop();
+
             LLVMPositionBuilderAtEnd(builder,con_block);
             //条件跳转指令，选择跳转到哪个块
 
@@ -282,7 +301,6 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             LLVMBuildCondBr(builder, /*condition:LLVMValueRef*/ cond_end,whi_body/*ifTrue:LLVMBasicBlockRef*/,next_block/*ifFalse:LLVMBasicBlockRef*/);
 
             LLVMPositionBuilderAtEnd(builder,whi_body);
-            blocks.pop();
             blocks.push(whi_body);
             visitStmt(ctx.stmt(0));
 
@@ -313,14 +331,51 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
 
             cond1 = visitCond(ctx.cond(0));
             if(ctx.AND()!=null){
+                LLVMBasicBlockRef conl_true = LLVMAppendBasicBlock(func_now,"conl_true");
+                LLVMBasicBlockRef conl_false = LLVMAppendBasicBlock(func_now,"conl_false");
                 LLVMValueRef isEqualToZero = LLVMBuildICmp(builder, LLVMIntEQ, cond1, LLVMConstInt(LLVMInt32Type(), 0, 0), "cmp");
+                LLVMBuildCondBr(builder,isEqualToZero,conl_false,conl_true);
 
-                LLVMValueRef result = LLVMBuildSelect(builder, isEqualToZero, LLVMConstInt(LLVMInt32Type(), 0, 0), visitCond(ctx.cond(1)), "result");
-                return result;
+                LLVMPositionBuilderAtEnd(builder,conl_false);
+
+                LLVMBasicBlockRef con_fa_ne = con_f_ne.pop();
+                LLVMBuildBr(builder,con_fa_ne);
+                con_f_ne.push(con_fa_ne);
+
+                LLVMPositionBuilderAtEnd(builder,conl_true);
+                cond2 = visitCond(ctx.cond(1));
+                isEqualToZero = LLVMBuildICmp(builder,LLVMIntEQ,cond2,LLVMConstInt(LLVMInt32Type(),0,0),"cmp_2");
+
+                LLVMBasicBlockRef con_tr_ne = con_true_ne.pop();
+                con_fa_ne = con_f_ne.pop();
+                LLVMBuildCondBr(builder,isEqualToZero,con_tr_ne,con_fa_ne);
+                con_f_ne.push(con_fa_ne);
+                con_true_ne.push(con_tr_ne);
+
+                return isEqualToZero;
             }else if(ctx.OR()!=null){
-                LLVMValueRef isEqualONe = LLVMBuildICmp(builder,LLVMIntNE,cond1,LLVMConstInt(LLVMInt32Type(),0,0),"cmp");
-                LLVMValueRef result = LLVMBuildSelect(builder,isEqualONe,LLVMConstInt(LLVMInt32Type(),1,0),visitCond(ctx.cond(1)),"result");
-                return result;
+                LLVMBasicBlockRef conl_true = LLVMAppendBasicBlock(func_now,"conl_true");
+                LLVMBasicBlockRef conl_false = LLVMAppendBasicBlock(func_now,"conl_false");
+                LLVMValueRef isEqualToOne = LLVMBuildICmp(builder, LLVMIntEQ, cond1, LLVMConstInt(LLVMInt32Type(), 1, 0), "cmp");
+                LLVMBuildCondBr(builder,isEqualToOne,conl_false,conl_true);
+
+                LLVMPositionBuilderAtEnd(builder,conl_true);
+
+                LLVMBasicBlockRef con_tr_ne = con_true_ne.pop();
+                LLVMBuildBr(builder,con_tr_ne);
+                con_true_ne.push(con_tr_ne);
+
+                LLVMPositionBuilderAtEnd(builder,conl_true);
+                cond2 = visitCond(ctx.cond(1));
+                isEqualToOne = LLVMBuildICmp(builder,LLVMIntEQ,cond2,LLVMConstInt(LLVMInt32Type(),1,0),"cmp_2");
+
+                LLVMBasicBlockRef con_fa_ne = con_f_ne.pop();
+                con_tr_ne = con_true_ne.pop();
+                LLVMBuildCondBr(builder,isEqualToOne,con_tr_ne,con_fa_ne);
+                con_f_ne.push(con_fa_ne);
+                con_true_ne.push(con_tr_ne);
+
+                return isEqualToOne;
             }else{
                 cond2 = visitCond(ctx.cond(1));
 
