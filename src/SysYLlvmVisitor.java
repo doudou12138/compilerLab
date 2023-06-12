@@ -367,7 +367,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                 LLVMBasicBlockRef con_tr_ne = con_true_ne.pop();
                 LLVMBuildBr(builder,con_tr_ne);
                 con_true_ne.push(con_tr_ne);
-                LLVMPositionBuilderAtEnd(builder,conl_true);
+                LLVMPositionBuilderAtEnd(builder,conl_false);
 
                 cond2 = visitCond(ctx.cond(1));
                 isEqualToOne = LLVMBuildICmp(builder,LLVMIntEQ,cond2,LLVMConstInt(LLVMInt32Type(),1,0),"cmp_2");
