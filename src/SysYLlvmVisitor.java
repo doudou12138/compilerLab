@@ -253,8 +253,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
 
             LLVMPositionBuilderAtEnd(builder,con_block);
             //条件跳转指令，选择跳转到哪个块
-            LLVMValueRef cond_b = LLVMBuildZExt(builder,cond,i32Type,"cond");
-            LLVMValueRef cond_end = LLVMBuildICmp(builder,LLVMIntNE,LLVMConstInt(i32Type,0,0),cond_b,"cond");
+            LLVMValueRef cond_end = LLVMBuildICmp(builder,LLVMIntNE,LLVMConstInt(i32Type,0,0),cond,"cond");
             LLVMBuildCondBr(builder, /*condition:LLVMValueRef*/ cond_end,trueBlock/*ifTrue:LLVMBasicBlockRef*/,falseBlock/*ifFalse:LLVMBasicBlockRef*/);
 
             //选择要在哪个基本块后追加指令
@@ -278,8 +277,8 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             LLVMValueRef cond = visitCond(ctx.cond());
             LLVMPositionBuilderAtEnd(builder,con_block);
             //条件跳转指令，选择跳转到哪个块
-            LLVMValueRef cond_b = LLVMBuildZExt(builder,cond,i32Type,"cond");
-            LLVMValueRef cond_end = LLVMBuildICmp(builder,LLVMIntNE,LLVMConstInt(i32Type,0,0),cond_b,"cond");
+
+            LLVMValueRef cond_end = LLVMBuildICmp(builder,LLVMIntNE,LLVMConstInt(i32Type,0,0),cond,"cond");
             LLVMBuildCondBr(builder, /*condition:LLVMValueRef*/ cond_end,whi_body/*ifTrue:LLVMBasicBlockRef*/,next_block/*ifFalse:LLVMBasicBlockRef*/);
 
             LLVMPositionBuilderAtEnd(builder,whi_body);
@@ -340,10 +339,9 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                 }else {
 
                 }
+                LLVMValueRef cond_i32 = LLVMBuildZExt(builder,cond,i32Type,"cond");
+                return cond_i32;
             }
-
-
-            return cond;
         }
     }
 

@@ -1,16 +1,6 @@
-int f(int a){
-    int x=a;
-    return x;
-}
-
-void gg(){
-    int x=2;
-    x = x+1;
-    return;
-}
-
 int main(){
-    int a = 1;
-    gg();
-    return f(a);
+    int a=2;
+    if(a<1<2){
+        a=1;
+    }
 }
