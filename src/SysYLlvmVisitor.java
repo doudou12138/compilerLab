@@ -358,7 +358,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             }else if(ctx.OR()!=null){
                 LLVMBasicBlockRef conl_true = LLVMAppendBasicBlock(func_now,"conl_true");
                 LLVMBasicBlockRef conl_false = LLVMAppendBasicBlock(func_now,"conl_false");
-                LLVMValueRef isEqualToOne = LLVMBuildICmp(builder, LLVMIntEQ, cond1, LLVMConstInt(LLVMInt32Type(), 1, 0), "cmp");
+                LLVMValueRef isEqualToOne = LLVMBuildICmp(builder, LLVMIntNE, cond1, LLVMConstInt(LLVMInt32Type(), 0, 0), "cmp");
                 LLVMBuildCondBr(builder,isEqualToOne,conl_false,conl_true);
 
                 LLVMPositionBuilderAtEnd(builder,conl_true);
