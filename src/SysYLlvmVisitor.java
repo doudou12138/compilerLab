@@ -348,7 +348,6 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
 
                 LLVMBasicBlockRef con_tr_ne = con_true_ne.pop();
                 con_fa_ne = con_f_ne.pop();
-
                 LLVMValueRef isZero_32 = LLVMBuildZExt(builder,isEqualToZero,i32Type,"chek_32");
                 LLVMBuildCondBr(builder,isEqualToZero,con_tr_ne,con_fa_ne);
                 con_f_ne.push(con_fa_ne);
@@ -369,7 +368,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                 LLVMPositionBuilderAtEnd(builder,conl_true);
 
                 cond2 = visitCond(ctx.cond(1));
-                isEqualToOne = LLVMBuildICmp(builder,LLVMIntEQ,cond2,LLVMConstInt(LLVMInt32Type(),1,0),"cmp_2");
+                isEqualToOne = LLVMBuildICmp(builder,LLVMIntNE,cond2,LLVMConstInt(LLVMInt32Type(),0,0),"cmp_2");
 
                 LLVMValueRef isOne_32 = LLVMBuildZExt(builder,isEqualToOne,i32Type,"isONe_32");
                 LLVMBasicBlockRef con_fa_ne = con_f_ne.pop();
