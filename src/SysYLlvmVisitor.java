@@ -357,7 +357,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             }else if(ctx.OR()!=null){
                 LLVMBasicBlockRef conl_true = LLVMAppendBasicBlock(func_now,"conl_true");
                 LLVMBasicBlockRef conl_false = LLVMAppendBasicBlock(func_now,"conl_false");
-                LLVMValueRef isEqualToOne = LLVMBuildICmp(builder, LLVMIntNE, cond1, LLVMConstInt(LLVMInt32Type(), 0, 0), "cmp");
+                LLVMValueRef isEqualToOne = LLVMBuildICmp(builder, LLVMIntEQ, cond1, LLVMConstInt(LLVMInt32Type(), 1, 0), "cmp");
                 LLVMBuildCondBr(builder,isEqualToOne,conl_true,conl_false);
 
                 LLVMPositionBuilderAtEnd(builder,conl_true);
@@ -368,7 +368,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                 LLVMPositionBuilderAtEnd(builder,conl_true);
 
                 cond2 = visitCond(ctx.cond(1));
-                isEqualToOne = LLVMBuildICmp(builder,LLVMIntNE,cond2,LLVMConstInt(LLVMInt32Type(),0,0),"cmp_2");
+                isEqualToOne = LLVMBuildICmp(builder,LLVMIntEQ,cond2,LLVMConstInt(LLVMInt32Type(),1,0),"cmp_2");
 
                 LLVMValueRef isOne_32 = LLVMBuildZExt(builder,isEqualToOne,i32Type,"isONe_32");
                 LLVMBasicBlockRef con_fa_ne = con_f_ne.pop();
