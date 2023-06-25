@@ -3,14 +3,19 @@ source_filename = "moudle"
 
 define void @main() {
 mainEntry:
-  %a = alloca i32, align 4
-  store i32 1, i32* %a, align 4
-  store i32 2, i32* %a, align 4
+  %a = alloca i32*, align 8
+  %elementPoint = getelementptr i32*, i32** %a
+  store i32 1, i32** %elementPoint, align 4
+  %elementPoint1 = getelementptr i32*, i32** %a
+  store i32 2, i32** %elementPoint1, align 4
+  %elementPoint2 = getelementptr i32*, i32** %a
+  store i32 3, i32** %elementPoint2, align 4
+  %elementPoint3 = getelementptr i32*, i32** %a
+  store i32 2, i32** %elementPoint3, align 4
   ret void
 }
 
 define i32 @main1() {
 main1Entry:
-  %callmain = call void @main()
   ret i32 1
 }

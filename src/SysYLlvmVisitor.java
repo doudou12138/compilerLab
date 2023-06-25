@@ -5,6 +5,7 @@ import org.bytedeco.javacpp.PointerPointer;
 import org.bytedeco.llvm.LLVM.*;
 
 import javax.swing.plaf.basic.BasicButtonUI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
@@ -110,13 +111,24 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
         }else if(ctx.funcFParams().funcFParam()==null){
             ft = LLVMFunctionType(returnType, (LLVMTypeRef) null, /* argumentCount */ 0, /* isVariadic */ 0);
         }else if(ctx.funcFParams().funcFParam().size()==1){
-            ft = LLVMFunctionType(returnType, i32Type, /* argumentCount */ 1, /* isVariadic */ 0);
+            if(ctx.funcFParams().funcFParam(0).L_BRACKT()==null) {
+                ft = LLVMFunctionType(returnType, i32Type, /* argumentCount */ 1, /* isVariadic */ 0);
+            }else{
+                LLVMTypeRef pointerType = LLVMPointerType(i32Type, 0);
+                ft=LLVMFunctionType(returnType,pointerType,1,0);
+            }
         }else{
+            LLVMTypeRef pointerType = LLVMPointerType(i32Type, 0);
+
             List<SysYParser.FuncFParamContext> paras = ctx.funcFParams().funcFParam();
             //生成函数参数类型
             PointerPointer<Pointer> argumentTypes = new PointerPointer<>(paras.size());
             for(int m=0;m<paras.size();++m){
-                argumentTypes.put(m,i32Type);
+                if(paras.get(m).L_BRACKT()==null){
+                    argumentTypes.put(m,i32Type);
+                }else{
+                    argumentTypes.put(m,pointerType);
+                }
             }
 
             //生成函数类型
@@ -139,10 +151,15 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
         llvmSymbolTable.enterScope();
 
         if(ctx.funcFParams()!=null){
-            for(int m=0;m<ctx.funcFParams().funcFParam().size();++m){
-                LLVMValueRef pointer = LLVMBuildAlloca(builder, i32Type, /*pointerName:String*/ctx.funcFParams().funcFParam(m).IDENT().getText());
-                LLVMBuildStore(builder,LLVMGetParam(function,m),pointer);
-                llvmSymbolTable.addEntry(ctx.funcFParams().funcFParam(m).IDENT().getText(),pointer,0);
+            for(int m=0;m<ctx.funcFParams().funcFParam().size();++m) {
+                LLVMValueRef pointer;
+                if (ctx.funcFParams().funcFParam(m).L_BRACKT() != null) {
+                    pointer = LLVMBuildAlloca(builder,LLVMPointerType(i32Type,0),ctx.funcFParams().funcFParam(m).IDENT().getText());
+                } else {
+                    pointer = LLVMBuildAlloca(builder, i32Type, /*pointerName:String*/ctx.funcFParams().funcFParam(m).IDENT().getText());
+                }
+                LLVMBuildStore(builder, LLVMGetParam(function, m), pointer);
+                llvmSymbolTable.addEntry(ctx.funcFParams().funcFParam(m).IDENT().getText(), pointer, 0);
             }
         }
 
@@ -164,14 +181,43 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
 
     @Override
     public LLVMValueRef visitVarDef(SysYParser.VarDefContext ctx){
-        LLVMValueRef pointer = LLVMBuildAlloca(builder, i32Type, /*pointerName:String*/ctx.IDENT().getText());
-        llvmSymbolTable.addEntry(ctx.IDENT().getText(),pointer,0);
+        LLVMValueRef pointer;
+        if(ctx.constExp().size()==0){
+            pointer = LLVMBuildAlloca(builder, i32Type, /*pointerName:String*/ctx.IDENT().getText());
+            llvmSymbolTable.addEntry(ctx.IDENT().getText(),pointer,0);
 
-        LLVMValueRef value = LLVMConstInt(i32Type,0,0);
-        if(ctx.initVal()!=null){
-            value = visitInitVal(ctx.initVal());
+            LLVMValueRef value = LLVMConstInt(i32Type,0,0);
+            if(ctx.initVal()!=null){
+                value = visitInitVal(ctx.initVal());
+            }
+            LLVMBuildStore(builder,value,pointer);
+        }else{
+            LLVMTypeRef point = LLVMPointerType(i32Type,0);
+            pointer = LLVMBuildAlloca(builder,point,ctx.IDENT().getText());
+            llvmSymbolTable.addEntry(ctx.IDENT().getText(),pointer,0);
+
+            int num = Utils.toDecimal(ctx.constExp(0).exp().getText());
+            List<LLVMValueRef> val = new ArrayList<>();
+            for(int m=0;m<num;++m){
+                val.add(LLVMConstInt(i32Type,0,0));
+            }
+            if(ctx.initVal()!=null){
+                for(int m=0;m<num;++m){
+                    val.set(m,visitExp(ctx.initVal().initVal(m).exp()));
+                }
+            }
+
+            for(int m=0;m<num;++m){
+                LLVMValueRef index = LLVMConstInt(i32Type,m,0);
+                PointerPointer<LLVMValueRef> indexArray = new PointerPointer<>(1);
+                indexArray.put(index);
+
+                LLVMValueRef elementPointer = LLVMBuildGEP(builder, pointer, indexArray,0,"elementPoint");
+
+                LLVMBuildStore(builder, val.get(m), elementPointer);
+            }
         }
-        LLVMBuildStore(builder,value,pointer);
+
         return null;
     }
 
@@ -219,9 +265,9 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             visitBlock(ctx.block());
             llvmSymbolTable.exitScope();
         }else if(ctx.ASSIGN()!=null){
-            LLVMSymbolTable.SymbolTableEntry entry = llvmSymbolTable.lookup(ctx.lVal().IDENT().getText(),2);
+            LLVMValueRef lva = visitLVal(ctx.lVal());
             LLVMValueRef value = visitExp(ctx.exp());
-            LLVMBuildStore(builder,value,entry.getLLValue());
+            LLVMBuildStore(builder,value,lva);
         }else if(ctx.IF()!=null){
 
             LLVMBasicBlockRef con_block = LLVMAppendBasicBlock(func_now,"condition");
@@ -412,7 +458,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             if(ctx.number()!=null){
                 return LLVMConstInt(i32Type,Utils.toDecimal(ctx.number().getText()),0);
             }else if(ctx.lVal()!=null){
-                return visitLVal(ctx.lVal());
+                return LLVMBuildLoad(builder,visitLVal(ctx.lVal()),ctx.lVal().IDENT().getText());
             }else if(ctx.IDENT()!=null){
                 LLVMValueRef func = llvmSymbolTable.lookup(ctx.IDENT().getText(),2).getLLValue();
                 LLVMValueRef result;
@@ -467,8 +513,16 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
     public LLVMValueRef visitLVal(SysYParser.LValContext ctx){
         LLVMSymbolTable.SymbolTableEntry entry = llvmSymbolTable.lookup(ctx.IDENT().getText(),2);
         LLVMValueRef result=null;
-        if(entry!=null){
-            result = LLVMBuildLoad(builder,entry.getLLValue(),ctx.IDENT().getText());
+        if(entry!=null) {
+            if (ctx.exp().size() == 0) {
+                result = entry.getLLValue();
+            }else {
+                LLVMValueRef index = LLVMConstInt(i32Type, Utils.toDecimal(ctx.exp(0).getText()), 0);
+                PointerPointer<LLVMValueRef> indexArray = new PointerPointer<>(1);
+                indexArray.put(index);
+                LLVMValueRef elePoint = LLVMBuildGEP(builder, entry.getLLValue(), indexArray, 0, "elementPoint");
+                result = elePoint;
+            }
         }
         return result;
     }
