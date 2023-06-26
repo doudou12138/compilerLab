@@ -100,11 +100,13 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                             LLVMSetInitializer(globalVar, /* constantVal:LLVMValueRef*/value);
                         }else{
                             // 获取全局变量类型 [5 x i32]
-                            //LLVMTypeRef arrayType = LLVMArrayType(i32Type, Utils.toDecimal(constDefs));
+                            LLVMTypeRef arrayType = LLVMArrayType(i32Type, Utils.toDecimal(constDefs.get(j).constExp(0).getText()));
 
                             // 创建全局变量并设置类型、名称和初始值
-                            //LLVMValueRef globalVar = LLVMAddGlobal(module, arrayType, "sort_arr");
-                            //LLVMSetInitializer(globalVar, LLVMConstNull(arrayType));
+                            LLVMValueRef globalVar = LLVMAddGlobal(module, arrayType, constDefs.get(j).IDENT().getText());
+                            LLVMSetInitializer(globalVar, LLVMConstNull(arrayType));
+                            llvmSymbolTable.addEntry(constDefs.get(j).IDENT().getText(),globalVar,0);
+
 
                         }
 
@@ -236,7 +238,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                 PointerPointer<LLVMValueRef> indexArray = new PointerPointer<>(1);
                 indexArray.put(index);
 
-                LLVMValueRef elementPointer = LLVMBuildGEP(builder, pointer, indexArray,0,"elementPoint");
+                LLVMValueRef elementPointer = LLVMBuildGEP(builder, pointer, indexArray,1,"elementPoint");
 
                 LLVMBuildStore(builder, val.get(m), elementPointer);
             }
@@ -255,15 +257,43 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
 
     @Override
     public LLVMValueRef visitConstDef(SysYParser.ConstDefContext ctx){
-        LLVMValueRef pointer = LLVMBuildAlloca(builder, i32Type, /*pointerName:String*/ctx.IDENT().getText());
-        llvmSymbolTable.addEntry(ctx.IDENT().getText(),pointer,0);
+        LLVMValueRef pointer;
+        if(ctx.constExp()==null) {
+            pointer = LLVMBuildAlloca(builder, i32Type, /*pointerName:String*/ctx.IDENT().getText());
+            llvmSymbolTable.addEntry(ctx.IDENT().getText(), pointer, 0);
 
-        LLVMValueRef value = LLVMConstInt(i32Type,0,0);
-        if(ctx.constInitVal()!=null){
-            value = visitConstInitVal(ctx.constInitVal());
-            LLVMSymbolTable.SymbolTableEntry entry = llvmSymbolTable.lookup(ctx.IDENT().getText(),2);
+            LLVMValueRef value = LLVMConstInt(i32Type, 0, 0);
+            if (ctx.constInitVal() != null) {
+                value = visitConstInitVal(ctx.constInitVal());
+                LLVMSymbolTable.SymbolTableEntry entry = llvmSymbolTable.lookup(ctx.IDENT().getText(), 2);
+            }
+            LLVMBuildStore(builder, value, pointer);
+        }else{
+            LLVMTypeRef point = LLVMPointerType(i32Type,0);
+            pointer = LLVMBuildAlloca(builder,point,ctx.IDENT().getText());
+            llvmSymbolTable.addEntry(ctx.IDENT().getText(),pointer,0);
+
+            int num = Utils.toDecimal(ctx.constExp(0).exp().getText());
+            List<LLVMValueRef> val = new ArrayList<>();
+            for(int m=0;m<num;++m){
+                val.add(LLVMConstInt(i32Type,0,0));
+            }
+            if(ctx.constInitVal()!=null){
+                for(int m=0;m<num;++m){
+                    val.set(m,visitConstExp(ctx.constInitVal().constExp()));
+                }
+            }
+
+            for(int m=0;m<num;++m){
+                LLVMValueRef index = LLVMConstInt(i32Type,m,0);
+                PointerPointer<LLVMValueRef> indexArray = new PointerPointer<>(1);
+                indexArray.put(index);
+
+                LLVMValueRef elementPointer = LLVMBuildGEP(builder, pointer, indexArray,1,"elementPoint");
+
+                LLVMBuildStore(builder, val.get(m), elementPointer);
+            }
         }
-        LLVMBuildStore(builder,value,pointer);
         return null;
     }
 
@@ -544,7 +574,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                 LLVMValueRef index = visitExp(ctx.exp(0));
                 PointerPointer<LLVMValueRef> indexArray = new PointerPointer<>(1);
                 indexArray.put(index);
-                LLVMValueRef elePoint = LLVMBuildGEP(builder, entry.getLLValue(), indexArray, 0, "elementPoint");
+                LLVMValueRef elePoint = LLVMBuildGEP(builder, entry.getLLValue(), indexArray, 1, "elementPoint");
                 result = elePoint;
             }
         }
