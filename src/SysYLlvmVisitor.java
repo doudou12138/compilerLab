@@ -593,19 +593,21 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                 result = entry.getLLValue();
             }else {
                 LLVMValueRef index = visitExp(ctx.exp(0));
-                int type = types.get(entry.getLLValue());
-                if (type == 3) {
-                    PointerPointer<LLVMValueRef> indexArray = new PointerPointer<>(1);
-                    indexArray.put(index);
-                    LLVMValueRef elePoint = LLVMBuildGEP(builder, entry.getLLValue(), indexArray, 1, "elementPoint");
-                    result = elePoint;
-                }else if(type==2){
-                    PointerPointer<LLVMValueRef> indexArr = new PointerPointer<>(2);
-                    indexArr.put(LLVMConstInt(i32Type,0,0));
-                    indexArr.put(index);
-                    result = LLVMBuildInBoundsGEP(builder,entry.getLLValue(),indexArr,1,"elePoint");
+                Object type = types.get(entry.getLLValue());
+                if(type!=null) {
+                    int type_i = (int)type;
+                    if (type_i == 3) {
+                        PointerPointer<LLVMValueRef> indexArray = new PointerPointer<>(1);
+                        indexArray.put(index);
+                        LLVMValueRef elePoint = LLVMBuildGEP(builder, entry.getLLValue(), indexArray, 1, "elementPoint");
+                        result = elePoint;
+                    } else if (type_i == 2) {
+                        PointerPointer<LLVMValueRef> indexArr = new PointerPointer<>(2);
+                        indexArr.put(LLVMConstInt(i32Type, 0, 0));
+                        indexArr.put(index);
+                        result = LLVMBuildInBoundsGEP(builder, entry.getLLValue(), indexArr, 1, "elePoint");
+                    }
                 }
-
             }
         }
         return result;
