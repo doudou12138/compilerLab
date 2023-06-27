@@ -613,10 +613,10 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                         LLVMValueRef elePoint = LLVMBuildGEP(builder, entry.getLLValue(), indexArray, 1, "elementPoint");
                         result = elePoint;
                     } else if (type_i == 2) {
-                        PointerPointer<LLVMValueRef> indexArr = new PointerPointer<>(2);
-                        indexArr.put(LLVMConstInt(i32Type, 0, 0));
-                        indexArr.put(index);
-                        result = LLVMBuildInBoundsGEP(builder, entry.getLLValue(), indexArr, 1, "elePoint");
+                        LLVMValueRef[] indexArr = new LLVMValueRef[2];
+                        indexArr[0]=(LLVMConstInt(i32Type, 0, 0));
+                        indexArr[1]=(index);
+                        result = LLVMBuildInBoundsGEP(builder, entry.getLLValue(), new PointerPointer<>(indexArr), 2, "elePoint");
                     }
                 }
             }
