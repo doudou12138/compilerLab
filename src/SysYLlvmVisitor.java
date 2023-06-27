@@ -75,14 +75,19 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                             LLVMSetInitializer(globalVar, /* constantVal:LLVMValueRef*/value);
                         }else{
                             //全局变量为array型
-                            int len=Utils.toDecimal(varDefs.get(j).constExp(0).exp().getText());
+                            int len=0;
+                            if(varDefs.get(j).constExp().size()!=0) {
+                                len = Utils.toDecimal(varDefs.get(j).constExp(0).exp().number().getText());
+                            }
                             LLVMTypeRef arrayType = LLVMArrayType(i32Type, len);
 
                             LLVMValueRef[] initVa = new LLVMValueRef[len];
                             LLVMValueRef initMeth = null;
                             if(varDefs.get(j).initVal()!=null){
-                                for(int m=0;m<len;++m){
-                                    initVa[m] = visitExp(varDefs.get(j).initVal().initVal(m).exp());
+                                for(int m=0;m<varDefs.get(j).initVal().initVal().size();++m){
+                                    if(varDefs.get(j).initVal().initVal(m).exp()!=null) {
+                                        initVa[m] = visitExp(varDefs.get(j).initVal().initVal(m).exp());
+                                    }
                                 }
                                 initMeth = LLVMConstArray(i32Type,new PointerPointer<>(initVa),len);
                             }else{

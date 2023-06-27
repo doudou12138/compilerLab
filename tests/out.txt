@@ -1,7 +1,7 @@
 ; ModuleID = 'moudle'
 source_filename = "moudle"
 
-@sort_arr = global [5 x i32] [i32 1, i32 2, i32 2, i32 4, i32 5]
+@sort_arr = global [5 x i32] 0
 
 define i32 @combine(i32* %0, i32 %1, i32* %2, i32 %3) {
 combineEntry:
