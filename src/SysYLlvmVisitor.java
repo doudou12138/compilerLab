@@ -278,7 +278,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                 initVa[m] = LLVMConstInt(i32Type,0,0);
             }
             if(ctx.initVal()!=null){
-                for(int m=0;m<num;++m){
+                for(int m=0;m<ctx.initVal().initVal().size();++m){
                     initVa[m]=visitExp(ctx.initVal().initVal(m).exp());
                 }
             }
@@ -321,7 +321,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                 val[m]=LLVMConstInt(i32Type,0,0);
             }
             if(ctx.constInitVal()!=null){
-                for(int m=0;m<num;++m){
+                for(int m=0;m<ctx.constInitVal().constInitVal().size();++m){
                     val[m]=visitConstExp(ctx.constInitVal().constInitVal(m).constExp());
                 }
             }
