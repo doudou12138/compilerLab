@@ -89,10 +89,13 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                                         initVa[m] = visitExp(varDefs.get(j).initVal().initVal(m).exp());
                                     }
                                 }
-                                initMeth = LLVMConstArray(i32Type,new PointerPointer<>(initVa),len);
                             }else{
-                                initMeth = LLVMConstNull(i32Type);
+                                for(int m=0;m<len;++m){
+                                    initVa[m]=LLVMConstInt(i32Type,0,0);
+                                }
                             }
+
+                            initMeth = LLVMConstArray(i32Type,new PointerPointer<>(initVa),len);
                             // 创建全局变量并设置类型、名称和初始值
                             LLVMValueRef globalVar = LLVMAddGlobal(module, arrayType, varDefs.get(j).IDENT().getText());
                             LLVMSetInitializer(globalVar,initMeth);
@@ -125,15 +128,19 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
 
                             LLVMValueRef initMeth = null;
                             // 创建全局变量并设置类型、名称和初始值
+                            LLVMValueRef[] initVa = new LLVMValueRef[len];
+
                             if(constDefs.get(j).constInitVal()!=null){
-                                LLVMValueRef[] initVa = new LLVMValueRef[len];
                                 for(int m=0;m<len;++m){
                                     initVa[m] = visitConstExp(constDefs.get(j).constInitVal().constInitVal(m).constExp());
                                 }
-                                initMeth = LLVMConstArray(i32Type,new PointerPointer<>(initVa),len);
                             }else{
-                                initMeth = LLVMConstNull(i32Type);
+                                for(int m=0;m<len;++m){
+                                    initVa[m]=LLVMConstInt(i32Type,0,0);
+                                }
                             }
+
+                            initMeth = LLVMConstArray(i32Type,new PointerPointer<>(initVa),len);
                             LLVMValueRef globalVar = LLVMAddGlobal(module, arrayType, constDefs.get(j).IDENT().getText());
                             LLVMSetInitializer(globalVar, initMeth);
                             llvmSymbolTable.addEntry(constDefs.get(j).IDENT().getText(),globalVar,0);
