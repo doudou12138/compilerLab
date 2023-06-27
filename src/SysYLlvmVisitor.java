@@ -229,7 +229,11 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
 
     @Override
     public LLVMValueRef visitParam(SysYParser.ParamContext ctx){
-        return visitExp(ctx.exp());
+        if(ctx.exp().lVal()!=null) {
+            return visitLVal(ctx.exp().lVal());
+        }else{
+            return visitExp(ctx.exp());
+        }
     }
 
     @Override
@@ -286,7 +290,6 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             LLVMValueRef value = LLVMConstInt(i32Type, 0, 0);
             if (ctx.constInitVal() != null) {
                 value = visitConstInitVal(ctx.constInitVal());
-                LLVMSymbolTable.SymbolTableEntry entry = llvmSymbolTable.lookup(ctx.IDENT().getText(), 2);
             }
             LLVMBuildStore(builder, value, pointer);
         }else{
@@ -312,6 +315,12 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
         return null;
     }
 
+    @Override
+    public  LLVMValueRef visitConstExp(SysYParser.ConstExpContext ctx){
+        return visitExp(ctx.exp());
+    }
+
+    @Override
     public LLVMValueRef visitConstInitVal(SysYParser.ConstInitValContext ctx){
         if(ctx.L_BRACE()==null&&ctx.constExp()!=null){
             return visitConstExp(ctx.constExp());
@@ -543,7 +552,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                                     LLVMConstInt(i32Type, 0, 0),
                                     LLVMConstInt(i32Type, 0, 0)
                             );
-                            args[i] = LLVMBuildInBoundsGEP(builder, args[i], indexPointer, 2, "arrayPtr");
+                            args[i] = LLVMBuildInBoundsGEP(builder, args[i], indexPointer, 1, "arrayPtr");
                         }
                     }
                     result = LLVMBuildCall(builder,func,new PointerPointer<>(args),ctx.funcRParams().param().size(),"call"+ctx.IDENT().getText());
