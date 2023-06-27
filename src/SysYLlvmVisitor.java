@@ -535,11 +535,14 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                     LLVMValueRef[] args = new LLVMValueRef[ctx.funcRParams().param().size()];
                     for(int i=0;i<ctx.funcRParams().param().size();++i){
                         args[i]=visitParam(ctx.funcRParams().param(i));
-                        PointerPointer<LLVMValueRef> indexPointer = new PointerPointer<>(
-                                LLVMConstInt(i32Type, 0, 0),
-                                LLVMConstInt(i32Type, 0, 0)
-                        );
-                        args[i] = LLVMBuildInBoundsGEP(builder, args[i], indexPointer, 2, "arrayPtr");
+                        Object type = types.get(args[i]);
+                        if (type!=null&&(int)type == 2) {
+                            PointerPointer<LLVMValueRef> indexPointer = new PointerPointer<>(
+                                    LLVMConstInt(i32Type, 0, 0),
+                                    LLVMConstInt(i32Type, 0, 0)
+                            );
+                            args[i] = LLVMBuildInBoundsGEP(builder, args[i], indexPointer, 2, "arrayPtr");
+                        }
                     }
                     result = LLVMBuildCall(builder,func,new PointerPointer<>(args),ctx.funcRParams().param().size(),"call"+ctx.IDENT().getText());
                 }
