@@ -54,7 +54,7 @@ public class Main {
                 myParseErrorListener.setMean();
                 SymbolTable symbolTable=new SymbolTable();
                 ErrorVisitor errorVisitor = new ErrorVisitor(symbolTable,myParseErrorListener);
-                errorVisitor.visit(tree);
+                //errorVisitor.visit(tree);
 
                 if(false){
                     //if(myParseErrorListener.hasError()){

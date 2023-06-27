@@ -83,17 +83,19 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
 
                             LLVMValueRef[] initVa = new LLVMValueRef[len];
                             LLVMValueRef initMeth = null;
+                            int m=0;
                             if(varDefs.get(j).initVal()!=null){
-                                for(int m=0;m<varDefs.get(j).initVal().initVal().size();++m){
+                                for(;m<varDefs.get(j).initVal().initVal().size();++m){
                                     if(varDefs.get(j).initVal().initVal(m).exp()!=null) {
                                         initVa[m] = visitExp(varDefs.get(j).initVal().initVal(m).exp());
                                     }
                                 }
-                            }else{
-                                for(int m=0;m<len;++m){
-                                    initVa[m]=LLVMConstInt(i32Type,0,0);
-                                }
                             }
+
+                            for(;m<len;++m){
+                                initVa[m]=LLVMConstInt(i32Type,0,0);
+                            }
+
 
                             initMeth = LLVMConstArray(i32Type,new PointerPointer<>(initVa),len);
                             // 创建全局变量并设置类型、名称和初始值
@@ -123,22 +125,26 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                             types.put(globalVar,1);
                         }else{
                             // 获取全局变量类型 [5 x i32]
-                            int len = Utils.toDecimal(constDefs.get(j).constExp(0).getText());
+                            int len = 0;
+                            if(constDefs.get(j).constExp().size()!=0){
+                                len=Utils.toDecimal(constDefs.get(j).constExp(0).exp().getText());
+                            }
                             LLVMTypeRef arrayType = LLVMArrayType(i32Type, len);
 
                             LLVMValueRef initMeth = null;
                             // 创建全局变量并设置类型、名称和初始值
                             LLVMValueRef[] initVa = new LLVMValueRef[len];
 
+                            int m=0;
                             if(constDefs.get(j).constInitVal()!=null){
-                                for(int m=0;m<len;++m){
+                                for(;m<constDefs.get(j).constInitVal().constInitVal().size();++m){
                                     initVa[m] = visitConstExp(constDefs.get(j).constInitVal().constInitVal(m).constExp());
                                 }
-                            }else{
-                                for(int m=0;m<len;++m){
-                                    initVa[m]=LLVMConstInt(i32Type,0,0);
-                                }
                             }
+                            for(;m<len;++m){
+                                initVa[m]=LLVMConstInt(i32Type,0,0);
+                            }
+
 
                             initMeth = LLVMConstArray(i32Type,new PointerPointer<>(initVa),len);
                             LLVMValueRef globalVar = LLVMAddGlobal(module, arrayType, constDefs.get(j).IDENT().getText());

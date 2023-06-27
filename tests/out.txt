@@ -19,8 +19,152 @@ combineEntry:
   store i32 0, i32* %j, align 4
   %k = alloca i32, align 4
   store i32 0, i32* %k, align 4
-  store i32 3, i32* getelementptr inbounds ([5 x i32], [5 x i32]* @sort_arr, i32 0, i32 1), align 4
-  ret i32 1
+  br label %condition
+
+condition:                                        ; preds = %the_next, %combineEntry
+  %i1 = load i32, i32* %i, align 4
+  %arr1_length2 = load i32, i32* %arr1_length, align 4
+  %lt = icmp slt i32 %i1, %arr1_length2
+  %cond = zext i1 %lt to i32
+  %cmp = icmp eq i32 %cond, 0
+  br i1 %cmp, label %conl_false, label %conl_true
+  %cond7 = icmp ne i32 0, %chek_32
+  br i1 %cond7, label %while_body, label %next_block
+
+while_body:                                       ; preds = %condition, %conl_true
+  br label %condition8
+
+next_block:                                       ; preds = %condition, %conl_true, %conl_false
+  br label %condition31
+
+conl_true:                                        ; preds = %condition
+  %j3 = load i32, i32* %j, align 4
+  %arr2_length4 = load i32, i32* %arr2_length, align 4
+  %lt5 = icmp slt i32 %j3, %arr2_length4
+  %cond6 = zext i1 %lt5 to i32
+  %cmp_2 = icmp eq i32 %cond6, 0
+  %chek_32 = zext i1 %cmp_2 to i32
+  br i1 %cmp_2, label %while_body, label %next_block
+
+conl_false:                                       ; preds = %condition
+  br label %next_block
+
+condition8:                                       ; preds = %while_body
+  %i9 = load i32, i32* %i, align 4
+  %elementPoint = getelementptr i32*, i32** %arr1, i32 %i9
+  %arr110 = load i32*, i32** %elementPoint, align 8
+  %j11 = load i32, i32* %j, align 4
+  %elementPoint12 = getelementptr i32*, i32** %arr2, i32 %j11
+  %arr213 = load i32*, i32** %elementPoint12, align 8
+  %lt14 = icmp slt i32* %arr110, %arr213
+  %cond15 = zext i1 %lt14 to i32
+  %cond28 = icmp ne i32 0, %cond15
+  br i1 %cond28, label %the_true, label %the_false
+
+the_true:                                         ; preds = %condition8
+  %k16 = load i32, i32* %k, align 4
+  %elePoint = getelementptr inbounds [5 x i32], [5 x i32]* @sort_arr, i32 0, i32 %k16
+  %i17 = load i32, i32* %i, align 4
+  %elementPoint18 = getelementptr i32*, i32** %arr1, i32 %i17
+  %arr119 = load i32*, i32** %elementPoint18, align 8
+  store i32* %arr119, i32* %elePoint, align 8
+  %i20 = load i32, i32* %i, align 4
+  %addtmp = add i32 %i20, 1
+  store i32 %addtmp, i32* %i, align 4
+  br label %the_next
+
+the_false:                                        ; preds = %condition8
+  %k21 = load i32, i32* %k, align 4
+  %elePoint22 = getelementptr inbounds [5 x i32], [5 x i32]* @sort_arr, i32 0, i32 %k21
+  %j23 = load i32, i32* %j, align 4
+  %elementPoint24 = getelementptr i32*, i32** %arr2, i32 %j23
+  %arr225 = load i32*, i32** %elementPoint24, align 8
+  store i32* %arr225, i32* %elePoint22, align 8
+  %j26 = load i32, i32* %j, align 4
+  %addtmp27 = add i32 %j26, 1
+  store i32 %addtmp27, i32* %j, align 4
+  br label %the_next
+
+the_next:                                         ; preds = %the_false, %the_true
+  %k29 = load i32, i32* %k, align 4
+  %addtmp30 = add i32 %k29, 1
+  store i32 %addtmp30, i32* %k, align 4
+  br label %condition
+
+condition31:                                      ; preds = %next_block
+  %i34 = load i32, i32* %i, align 4
+  %arr1_length35 = load i32, i32* %arr1_length, align 4
+  %eq = icmp eq i32 %i34, %arr1_length35
+  %cond36 = zext i1 %eq to i32
+  %cond72 = icmp ne i32 0, %cond36
+  br i1 %cond72, label %the_true32, label %the_false33
+
+the_true32:                                       ; preds = %condition31
+  br label %condition38
+
+the_false33:                                      ; preds = %condition31
+  br label %condition55
+
+the_next37:                                       ; preds = %next_block57, %next_block40
+  %arr1_length73 = load i32, i32* %arr1_length, align 4
+  %arr2_length74 = load i32, i32* %arr2_length, align 4
+  %addtmp75 = add i32 %arr1_length73, %arr2_length74
+  %subtmp = sub i32 %addtmp75, 1
+  %elePoint76 = getelementptr inbounds [5 x i32], [5 x i32]* @sort_arr, i32 0, i32 %subtmp
+  %sort_arr = load i32, i32* %elePoint76, align 4
+  ret i32 %sort_arr
+
+condition38:                                      ; preds = %while_body39, %the_true32
+  %j41 = load i32, i32* %j, align 4
+  %arr2_length42 = load i32, i32* %arr2_length, align 4
+  %lt43 = icmp slt i32 %j41, %arr2_length42
+  %cond44 = zext i1 %lt43 to i32
+  %cond45 = icmp ne i32 0, %cond44
+  br i1 %cond45, label %while_body39, label %next_block40
+
+while_body39:                                     ; preds = %condition38
+  %k46 = load i32, i32* %k, align 4
+  %elePoint47 = getelementptr inbounds [5 x i32], [5 x i32]* @sort_arr, i32 0, i32 %k46
+  %j48 = load i32, i32* %j, align 4
+  %elementPoint49 = getelementptr i32*, i32** %arr2, i32 %j48
+  %arr250 = load i32*, i32** %elementPoint49, align 8
+  store i32* %arr250, i32* %elePoint47, align 8
+  %k51 = load i32, i32* %k, align 4
+  %addtmp52 = add i32 %k51, 1
+  store i32 %addtmp52, i32* %k, align 4
+  %j53 = load i32, i32* %j, align 4
+  %addtmp54 = add i32 %j53, 1
+  store i32 %addtmp54, i32* %j, align 4
+  br label %condition38
+
+next_block40:                                     ; preds = %condition38
+  br label %the_next37
+
+condition55:                                      ; preds = %while_body56, %the_false33
+  %i58 = load i32, i32* %i, align 4
+  %arr1_length59 = load i32, i32* %arr1_length, align 4
+  %lt60 = icmp slt i32 %i58, %arr1_length59
+  %cond61 = zext i1 %lt60 to i32
+  %cond62 = icmp ne i32 0, %cond61
+  br i1 %cond62, label %while_body56, label %next_block57
+
+while_body56:                                     ; preds = %condition55
+  %k63 = load i32, i32* %k, align 4
+  %elePoint64 = getelementptr inbounds [5 x i32], [5 x i32]* @sort_arr, i32 0, i32 %k63
+  %i65 = load i32, i32* %i, align 4
+  %elementPoint66 = getelementptr i32*, i32** %arr2, i32 %i65
+  %arr267 = load i32*, i32** %elementPoint66, align 8
+  store i32* %arr267, i32* %elePoint64, align 8
+  %k68 = load i32, i32* %k, align 4
+  %addtmp69 = add i32 %k68, 1
+  store i32 %addtmp69, i32* %k, align 4
+  %i70 = load i32, i32* %i, align 4
+  %addtmp71 = add i32 %i70, 1
+  store i32 %addtmp71, i32* %i, align 4
+  br label %condition55
+
+next_block57:                                     ; preds = %condition55
+  br label %the_next37
 }
 
 define i32 @main() {
