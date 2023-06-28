@@ -354,6 +354,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                 value = visitInitVal(ctx.initVal());
             }
             LLVMBuildStore(builder,value,pointer);
+            types.put(pointer,1);
         }else{
             int len = Utils.toDecimal(ctx.constExp(0).exp().getText());
             LLVMTypeRef point = LLVMArrayType(i32Type,len);
@@ -445,6 +446,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
         if(ctx.constExp().size()==0) {
             pointer = LLVMBuildAlloca(builder, i32Type, /*pointerName:String*/ctx.IDENT().getText());
             llvmSymbolTable.addEntry(ctx.IDENT().getText(), pointer, 0);
+            types.put(pointer,1);
 
             LLVMValueRef value = LLVMConstInt(i32Type, 0, 0);
             if (ctx.constInitVal() != null) {

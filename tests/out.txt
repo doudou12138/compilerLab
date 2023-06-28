@@ -1,14 +1,26 @@
 ; ModuleID = 'moudle'
 source_filename = "moudle"
 
-define i32 @func2(i32 %0) {
+@arr = global [5 x i32] zeroinitializer
+
+define i32 @func2(i32* %0, i32 %1, i32 %2) {
 func2Entry:
-  %arr1 = alloca i32, align 4
-  store i32 %0, i32* %arr1, align 4
-  store i32 0, i32* %arr1, align 4
-  %arr11 = load i32, i32* %arr1, align 4
-  %multmp = mul i32 %arr11, 4
-  %callfunc2 = call i32 @func2(i32 %multmp)
+  %arr1 = alloca i32*, align 8
+  store i32* %0, i32** %arr1, align 8
+  %x = alloca i32, align 4
+  store i32 %1, i32* %x, align 4
+  %y = alloca i32, align 4
+  store i32 %2, i32* %y, align 4
+  %loadArrPtr = load i32*, i32** %arr1, align 8
+  %elementPoint = getelementptr i32, i32* %loadArrPtr, i32 0
+  store i32 0, i32* %elementPoint, align 4
+  %i = alloca i32, align 4
+  store i32 1, i32* %i, align 4
+  %loadArrPtr1 = load i32*, i32** %arr1, align 8
+  %elementPoint2 = getelementptr i32, i32* %loadArrPtr1, i32 0
+  %i3 = load i32, i32* %i, align 4
+  %y4 = load i32, i32* %y, align 4
+  %callfunc2 = call i32 @func2(i32* %elementPoint2, i32 %i3, i32 %y4)
   ret i32 %callfunc2
   ret i32 0
 }
