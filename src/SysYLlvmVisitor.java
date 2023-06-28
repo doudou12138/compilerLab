@@ -255,7 +255,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
         }else if(ctx.funcFParams().funcFParam()==null){
             ft = LLVMFunctionType(returnType, (LLVMTypeRef) null, /* argumentCount */ 0, /* isVariadic */ 0);
         }else if(ctx.funcFParams().funcFParam().size()==1){
-            if(ctx.funcFParams().funcFParam(0).L_BRACKT()==null) {
+            if(ctx.funcFParams().funcFParam(0).L_BRACKT().size()==0) {
                 ft = LLVMFunctionType(returnType, i32Type, /* argumentCount */ 1, /* isVariadic */ 0);
             }else{
                 LLVMTypeRef pointerType = LLVMPointerType(i32Type, 0);
@@ -326,7 +326,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
     @Override
     public LLVMValueRef visitParam(SysYParser.ParamContext ctx){
         if(ctx.exp().lVal()!=null) {
-            if(ctx.exp().lVal().exp()!=null){
+            if(ctx.exp().lVal().exp().size()!=0){
                 return visitExp(ctx.exp());
             }
             LLVMValueRef result = visitLVal(ctx.exp().lVal());
