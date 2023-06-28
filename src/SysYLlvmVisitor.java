@@ -330,12 +330,6 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                 return visitExp(ctx.exp());
             }
             LLVMValueRef result = visitLVal(ctx.exp().lVal());
-            //Object type = types.get(result);
-            //if(type!=null){
-            //    if((int)type==1){
-            //        return LLVMBuildLoad(builder,result,ctx.exp().lVal().getText());
-            //    }
-            //}
             return result;
         }else{
             return visitExp(ctx.exp());
