@@ -298,8 +298,8 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             for(int m=0;m<ctx.funcFParams().funcFParam().size();++m) {
                 LLVMValueRef pointer;
                 if (ctx.funcFParams().funcFParam(m).L_BRACKT().size() != 0) {
-                    pointer = LLVMBuildAlloca(builder,LLVMPointerType(i32Type,0),ctx.funcFParams().funcFParam(m).IDENT().getText());
-                    types.put(pointer,3);
+                    pointer = LLVMBuildAlloca(builder,LLVMArrayType(i32Type,0),ctx.funcFParams().funcFParam(m).IDENT().getText());
+                    types.put(pointer,2);
                 } else {
                     pointer = LLVMBuildAlloca(builder, i32Type, /*pointerName:String*/ctx.funcFParams().funcFParam(m).IDENT().getText());
                     types.put(pointer,1);
@@ -330,6 +330,12 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                 return visitExp(ctx.exp());
             }
             LLVMValueRef result = visitLVal(ctx.exp().lVal());
+            Object type = types.get(result);
+            if(type!=null){
+                if((int)type==1){
+                    return LLVMBuildLoad(builder,result,ctx.exp().lVal().getText());
+                }
+            }
             return result;
         }else{
             return visitExp(ctx.exp());
