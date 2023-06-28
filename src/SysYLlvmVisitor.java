@@ -305,6 +305,9 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
         if(ctx.funcType().VOID()!=null){
             LLVMPositionBuilderAtEnd(builder,block);
             LLVMBuildRet(builder,null);
+        }else if(ctx.funcType().INT()!=null){
+            LLVMPositionBuilderAtEnd(builder,block);
+            LLVMBuildRet(builder,LLVMConstInt(i32Type,0,0));
         }
 
         return null;
