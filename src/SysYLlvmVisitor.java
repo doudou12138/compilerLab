@@ -101,6 +101,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                                                     m++;
                                                 }
                                             } else if ((int) type == 3) {
+                                                initVa1= LLVMBuildLoad(builder,initVa1,varDefs.get(j).initVal().exp().lVal().getText());
                                                 LLVMValueRef[] ite = new LLVMValueRef[1];
                                                 for (int x = 0; x < len; ++x) {
                                                     ite[0] = LLVMConstInt(i32Type, x, 0);
@@ -189,6 +190,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                                             } else if ((int) type == 3) {
                                                 LLVMValueRef[] ite = new LLVMValueRef[1];
                                                 for (int x = 0; x < len; ++x) {
+                                                    initVa1= LLVMBuildLoad(builder,initVa1,constDefs.get(j).constInitVal().constExp().exp().lVal().getText());
                                                     ite[0] = LLVMConstInt(i32Type, x, 0);
                                                     LLVMValueRef pointer_r = LLVMBuildGEP(builder, initVa1, new PointerPointer<>(ite), 1, constDefs.get(j).constInitVal().constExp().exp().lVal().getText() + x);
                                                     initVa[x] = LLVMBuildLoad(builder, pointer_r, constDefs.get(j).constInitVal().constExp().exp().lVal().getText() + x);
@@ -362,6 +364,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                             } else if ((int) type == 3) {
                                 LLVMValueRef[] ite = new LLVMValueRef[1];
                                 for (int x = 0; x < len; ++x) {
+                                    initVa1 = LLVMBuildLoad(builder,initVa1,ctx.initVal().exp().lVal().getText());
                                     ite[0] = LLVMConstInt(i32Type, x, 0);
                                     LLVMValueRef pointer_r = LLVMBuildGEP(builder, initVa1, new PointerPointer<>(ite), 1, ctx.initVal().exp().lVal().getText() + x);
                                     initVa[x] = LLVMBuildLoad(builder, pointer_r, ctx.initVal().exp().lVal().getText() + x);
@@ -445,6 +448,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                             } else if ((int) type == 3) {
                                 LLVMValueRef[] ite = new LLVMValueRef[1];
                                 for (int x = 0; x < len; ++x) {
+                                    initVa1 = LLVMBuildLoad(builder,initVa1,ctx.constInitVal().constExp().exp().lVal().getText());
                                     ite[0] = LLVMConstInt(i32Type, x, 0);
                                     LLVMValueRef pointer_r = LLVMBuildGEP(builder, initVa1, new PointerPointer<>(ite), 1, ctx.constInitVal().constExp().exp().lVal().getText() + x);
                                     initVa[x] = LLVMBuildLoad(builder, pointer_r, ctx.constInitVal().constExp().exp().lVal().getText() + x);
