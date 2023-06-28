@@ -12,7 +12,7 @@ func2Entry:
   %y = alloca i32, align 4
   store i32 %2, i32* %y, align 4
   %loadArrPtr = load i32*, i32** %arr1, align 8
-  %elementPoint = getelementptr i32, i32* %loadArrPtr, i32 0
+  %elementPoint = getelementptr i32, i32* %loadArrPtr, i32 2
   store i32 0, i32* %elementPoint, align 4
   %i = alloca i32, align 4
   store i32 1, i32* %i, align 4
@@ -21,7 +21,14 @@ func2Entry:
   %i3 = load i32, i32* %i, align 4
   %y4 = load i32, i32* %y, align 4
   %callfunc2 = call i32 @func2(i32* %elementPoint2, i32 %i3, i32 %y4)
-  ret i32 %callfunc2
+  %arr = load i32, i32* getelementptr inbounds ([5 x i32], [5 x i32]* @arr, i32 0, i32 1), align 4
+  %loadArrPtr5 = load i32*, i32** %arr1, align 8
+  %elementPoint6 = getelementptr i32, i32* %loadArrPtr5, i32 1
+  %arr17 = load i32, i32* %elementPoint6, align 4
+  %y8 = load i32, i32* %y, align 4
+  %addtmp = add i32 %arr17, %y8
+  %callfunc29 = call i32 @func2(i32* getelementptr inbounds ([5 x i32], [5 x i32]* @arr, i32 0, i32 0), i32 %arr, i32 %addtmp)
+  ret i32 %callfunc29
   ret i32 0
 }
 

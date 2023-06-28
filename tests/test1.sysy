@@ -1,9 +1,9 @@
 int arr[5];
 int func2(int arr1[],int x,int y){
-    arr1[0]=0;
+    arr1[2]=0;
     int i=1;
-    return func2(arr1,i,y);
-    func2(arr,arr[1],arr1[1]+y);
+    func2(arr1,i,y);
+    return func2(arr,arr[1],arr1[1]+y);
 }
 
 int main(int arr1[],int arr2) {
