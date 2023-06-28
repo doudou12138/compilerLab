@@ -419,7 +419,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
     @Override
     public LLVMValueRef visitConstDef(SysYParser.ConstDefContext ctx){
         LLVMValueRef pointer;
-        if(ctx.constExp()==null) {
+        if(ctx.constExp().size()==0) {
             pointer = LLVMBuildAlloca(builder, i32Type, /*pointerName:String*/ctx.IDENT().getText());
             llvmSymbolTable.addEntry(ctx.IDENT().getText(), pointer, 0);
 
