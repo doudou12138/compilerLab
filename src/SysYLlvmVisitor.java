@@ -101,11 +101,11 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                                                     m++;
                                                 }
                                             } else if ((int) type == 3) {
-                                                initVa1= LLVMBuildLoad(builder,initVa1,varDefs.get(j).initVal().exp().lVal().getText());
+                                                LLVMValueRef initVa2= LLVMBuildLoad(builder,initVa1,varDefs.get(j).initVal().exp().lVal().getText());
                                                 LLVMValueRef[] ite = new LLVMValueRef[1];
                                                 for (int x = 0; x < len; ++x) {
                                                     ite[0] = LLVMConstInt(i32Type, x, 0);
-                                                    LLVMValueRef pointer_r = LLVMBuildGEP(builder, initVa1, new PointerPointer<>(ite), 1, varDefs.get(j).initVal().exp().lVal().getText() + x);
+                                                    LLVMValueRef pointer_r = LLVMBuildGEP(builder, initVa2, new PointerPointer<>(ite), 1, varDefs.get(j).initVal().exp().lVal().getText() + x);
                                                     initVa[x] = LLVMBuildLoad(builder, pointer_r, varDefs.get(j).initVal().exp().lVal().getText() + x);
 
 //                                                  //LLVMValueRef pointer_l = LLVMBuildInBoundsGEP(builder, globalVar, new PointerPointer<>(ite), 1, varDefs.get(j).IDENT().getText());
@@ -190,9 +190,9 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                                             } else if ((int) type == 3) {
                                                 LLVMValueRef[] ite = new LLVMValueRef[1];
                                                 for (int x = 0; x < len; ++x) {
-                                                    initVa1= LLVMBuildLoad(builder,initVa1,constDefs.get(j).constInitVal().constExp().exp().lVal().getText());
+                                                    LLVMValueRef initVa2= LLVMBuildLoad(builder,initVa1,constDefs.get(j).constInitVal().constExp().exp().lVal().getText());
                                                     ite[0] = LLVMConstInt(i32Type, x, 0);
-                                                    LLVMValueRef pointer_r = LLVMBuildGEP(builder, initVa1, new PointerPointer<>(ite), 1, constDefs.get(j).constInitVal().constExp().exp().lVal().getText() + x);
+                                                    LLVMValueRef pointer_r = LLVMBuildGEP(builder, initVa2, new PointerPointer<>(ite), 1, constDefs.get(j).constInitVal().constExp().exp().lVal().getText() + x);
                                                     initVa[x] = LLVMBuildLoad(builder, pointer_r, constDefs.get(j).constInitVal().constExp().exp().lVal().getText() + x);
 
 //                                                    LLVMValueRef pointer_l = LLVMBuildInBoundsGEP(builder, globalVar, new PointerPointer<>(ite), 1, constDefs.get(j).IDENT().getText());
@@ -364,9 +364,9 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                             } else if ((int) type == 3) {
                                 LLVMValueRef[] ite = new LLVMValueRef[1];
                                 for (int x = 0; x < len; ++x) {
-                                    initVa1 = LLVMBuildLoad(builder,initVa1,ctx.initVal().exp().lVal().getText());
+                                    LLVMValueRef initVa2 = LLVMBuildLoad(builder,initVa1,ctx.initVal().exp().lVal().getText());
                                     ite[0] = LLVMConstInt(i32Type, x, 0);
-                                    LLVMValueRef pointer_r = LLVMBuildGEP(builder, initVa1, new PointerPointer<>(ite), 1, ctx.initVal().exp().lVal().getText() + x);
+                                    LLVMValueRef pointer_r = LLVMBuildGEP(builder, initVa2, new PointerPointer<>(ite), 1, ctx.initVal().exp().lVal().getText() + x);
                                     initVa[x] = LLVMBuildLoad(builder, pointer_r, ctx.initVal().exp().lVal().getText() + x);
 
 //                                    LLVMValueRef pointer_l = LLVMBuildInBoundsGEP(builder, pointer, new PointerPointer<>(ite), 1, ctx.IDENT().getText());
@@ -448,9 +448,9 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                             } else if ((int) type == 3) {
                                 LLVMValueRef[] ite = new LLVMValueRef[1];
                                 for (int x = 0; x < len; ++x) {
-                                    initVa1 = LLVMBuildLoad(builder,initVa1,ctx.constInitVal().constExp().exp().lVal().getText());
+                                    LLVMValueRef initVa2 = LLVMBuildLoad(builder,initVa1,ctx.constInitVal().constExp().exp().lVal().getText());
                                     ite[0] = LLVMConstInt(i32Type, x, 0);
-                                    LLVMValueRef pointer_r = LLVMBuildGEP(builder, initVa1, new PointerPointer<>(ite), 1, ctx.constInitVal().constExp().exp().lVal().getText() + x);
+                                    LLVMValueRef pointer_r = LLVMBuildGEP(builder, initVa2, new PointerPointer<>(ite), 1, ctx.constInitVal().constExp().exp().lVal().getText() + x);
                                     initVa[x] = LLVMBuildLoad(builder, pointer_r, ctx.constInitVal().constExp().exp().lVal().getText() + x);
 
 //                                    LLVMValueRef pointer_l = LLVMBuildInBoundsGEP(builder, pointer, new PointerPointer<>(ite), 1, ctx.IDENT().getText());
@@ -777,10 +777,10 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                     int type_i = (int)type;
                     if (type_i == 3) {
                         LLVMValueRef ref = entry.getLLValue();
-                        ref = LLVMBuildLoad(builder, ref, "loadArrPtr");
+                        LLVMValueRef ref2 = LLVMBuildLoad(builder, ref, "loadArrPtr");
                         PointerPointer<LLVMValueRef> indexArray = new PointerPointer<>(1);
                         indexArray.put(index);
-                        LLVMValueRef elePoint = LLVMBuildGEP(builder,ref , indexArray, 1, "elementPoint");
+                        LLVMValueRef elePoint = LLVMBuildGEP(builder,ref2 , indexArray, 1, "elementPoint");
                         result = elePoint;
                     } else if (type_i == 2) {
                         LLVMValueRef[] indexArr = new LLVMValueRef[2];
