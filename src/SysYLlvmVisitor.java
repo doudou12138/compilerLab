@@ -161,7 +161,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                             if(constDefs.get(j).constExp().size()!=0){
                                 len=Utils.toDecimal(constDefs.get(j).constExp(0).exp().getText());
                             }
-                            LLVMTypeRef arrayType = LLVMVectorType(i32Type, len);
+                            LLVMTypeRef arrayType = LLVMArrayType(i32Type, len);
 
                             LLVMValueRef initMeth = null;
                             // 创建全局变量并设置类型、名称和初始值
@@ -335,7 +335,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             LLVMBuildStore(builder,value,pointer);
         }else{
             int len = Utils.toDecimal(ctx.constExp(0).exp().getText());
-            LLVMTypeRef point = LLVMVectorType(i32Type,len);
+            LLVMTypeRef point = LLVMArrayType(i32Type,len);
             pointer = LLVMBuildAlloca(builder,point,ctx.IDENT().getText());
             LLVMSetAlignment(pointer,len*4);
             llvmSymbolTable.addEntry(ctx.IDENT().getText(),pointer,0);
@@ -422,7 +422,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             LLVMBuildStore(builder, value, pointer);
         }else{
             int len = Utils.toDecimal(ctx.constExp(0).exp().getText());
-            LLVMTypeRef point = LLVMVectorType(i32Type,len);
+            LLVMTypeRef point = LLVMArrayType(i32Type,len);
             pointer = LLVMBuildAlloca(builder,point,ctx.IDENT().getText());
             LLVMSetAlignment(pointer,len*4);
 
