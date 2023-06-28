@@ -1,22 +1,22 @@
 ; ModuleID = 'moudle'
 source_filename = "moudle"
 
-@sort_arr = global [5 x i32] [i32 1, i32 2, i32 0, i32 0, i32 0]
+@sort_arr = global <5 x i32> [i32 1, i32 2, i32 0, i32 0, i32 0]
 
 define i32 @main() {
 mainEntry:
-  %a = alloca [2 x i32], [2 x i32] [i32 1, i32 5], align 4
+  %a = alloca <2 x i32>, [2 x i32] [i32 1, i32 5], align 8
   %n = alloca i32, align 4
-  %sort_arr = load i32, i32* getelementptr inbounds ([5 x i32], [5 x i32]* @sort_arr, i32 0, i32 1), align 4
-  %elePoint = getelementptr inbounds [2 x i32], [2 x i32]* %a, i32 0, i32 0
+  %sort_arr = load i32, i32* getelementptr inbounds (<5 x i32>, <5 x i32>* @sort_arr, i32 0, i32 1), align 4
+  %elePoint = getelementptr inbounds <2 x i32>, <2 x i32>* %a, i32 0, i32 0
   %a1 = load i32, i32* %elePoint, align 4
   %multmp = mul i32 %sort_arr, %a1
   store i32 %multmp, i32* %n, align 4
-  %m = alloca [5 x i32], [5 x i32] [i32 %sort_arr0, i32 %sort_arr1, i32 %sort_arr2, i32 %sort_arr3, i32 %sort_arr4], align 4
-  %sort_arr0 = load i32, i32* getelementptr inbounds ([5 x i32], [5 x i32]* @sort_arr, i32 0, i32 0), align 4
-  %sort_arr1 = load i32, i32* getelementptr inbounds ([5 x i32], [5 x i32]* @sort_arr, i32 0, i32 1), align 4
-  %sort_arr2 = load i32, i32* getelementptr inbounds ([5 x i32], [5 x i32]* @sort_arr, i32 0, i32 2), align 4
-  %sort_arr3 = load i32, i32* getelementptr inbounds ([5 x i32], [5 x i32]* @sort_arr, i32 0, i32 3), align 4
-  %sort_arr4 = load i32, i32* getelementptr inbounds ([5 x i32], [5 x i32]* @sort_arr, i32 0, i32 4), align 4
+  %m = alloca <5 x i32>, [5 x i32] [i32 %sort_arr0, i32 %sort_arr1, i32 %sort_arr2, i32 %sort_arr3, i32 %sort_arr4], align 32
+  %sort_arr0 = load i32, i32* getelementptr inbounds (<5 x i32>, <5 x i32>* @sort_arr, i32 0, i32 0), align 4
+  %sort_arr1 = load i32, i32* getelementptr inbounds (<5 x i32>, <5 x i32>* @sort_arr, i32 0, i32 1), align 4
+  %sort_arr2 = load i32, i32* getelementptr inbounds (<5 x i32>, <5 x i32>* @sort_arr, i32 0, i32 2), align 4
+  %sort_arr3 = load i32, i32* getelementptr inbounds (<5 x i32>, <5 x i32>* @sort_arr, i32 0, i32 3), align 4
+  %sort_arr4 = load i32, i32* getelementptr inbounds (<5 x i32>, <5 x i32>* @sort_arr, i32 0, i32 4), align 4
   ret i32 1
 }

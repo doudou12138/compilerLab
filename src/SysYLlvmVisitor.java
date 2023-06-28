@@ -79,7 +79,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                             if(varDefs.get(j).constExp().size()!=0) {
                                 len = Utils.toDecimal(varDefs.get(j).constExp(0).exp().number().getText());
                             }
-                            LLVMTypeRef arrayType = LLVMArrayType(i32Type, len);
+                            LLVMTypeRef arrayType = LLVMVectorType(i32Type, len);
                             LLVMValueRef globalVar = LLVMAddGlobal(module, arrayType, varDefs.get(j).IDENT().getText());
 
                             LLVMValueRef[] initVa = new LLVMValueRef[len];
@@ -160,7 +160,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                             if(constDefs.get(j).constExp().size()!=0){
                                 len=Utils.toDecimal(constDefs.get(j).constExp(0).exp().getText());
                             }
-                            LLVMTypeRef arrayType = LLVMArrayType(i32Type, len);
+                            LLVMTypeRef arrayType = LLVMVectorType(i32Type, len);
 
                             LLVMValueRef initMeth = null;
                             // 创建全局变量并设置类型、名称和初始值
@@ -333,7 +333,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             LLVMBuildStore(builder,value,pointer);
         }else{
             int len = Utils.toDecimal(ctx.constExp(0).exp().getText());
-            LLVMTypeRef point = LLVMArrayType(i32Type,len);
+            LLVMTypeRef point = LLVMVectorType(i32Type,len);
             pointer = LLVMBuildAlloca(builder,point,ctx.IDENT().getText());
             llvmSymbolTable.addEntry(ctx.IDENT().getText(),pointer,0);
             types.put(pointer,2);
@@ -418,7 +418,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
             LLVMBuildStore(builder, value, pointer);
         }else{
             int len = Utils.toDecimal(ctx.constExp(0).exp().getText());
-            LLVMTypeRef point = LLVMArrayType(i32Type,len);
+            LLVMTypeRef point = LLVMVectorType(i32Type,len);
             pointer = LLVMBuildAlloca(builder,point,ctx.IDENT().getText());
             llvmSymbolTable.addEntry(ctx.IDENT().getText(),pointer,0);
             types.put(pointer,2);
