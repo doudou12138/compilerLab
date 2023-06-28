@@ -761,11 +761,11 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                                 args[i] = LLVMBuildInBoundsGEP(builder, args[i], indexPointer, 2, "arrayPtr");
                             }
                             else if((int)type==3){
-//                            LLVMValueRef ref2 = LLVMBuildLoad(builder, args[i], "loadArrPtr");
-//                            PointerPointer<LLVMValueRef> indexArray = new PointerPointer<>(1);
-//                            indexArray.put();
-//                            LLVMValueRef elePoint = LLVMBuildGEP(builder,ref2 , indexArray, 1, "elementPoint");
-//                            result = elePoint;
+                                LLVMValueRef ref2 = LLVMBuildLoad(builder, args[i], "loadArrPtr");
+                                PointerPointer<LLVMValueRef> indexArray = new PointerPointer<>(1);
+                                indexArray.put(LLVMConstInt(i32Type,0,0));
+                                LLVMValueRef elePoint = LLVMBuildGEP(builder,ref2 , indexArray, 1, "elementPoint");
+                                args[i] = elePoint;
                             }
                         }
                     }
