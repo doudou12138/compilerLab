@@ -451,8 +451,8 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                                     LLVMValueRef pointer_r = LLVMBuildInBoundsGEP(builder, initVa1, new PointerPointer<>(ite), 2, ctx.constInitVal().constExp().exp().lVal().getText() +x);
                                     initVa[x] = LLVMBuildLoad(builder, pointer_r, ctx.constInitVal().constExp().exp().lVal().getText() + x);
 
-//                                    LLVMValueRef pointer_l = LLVMBuildInBoundsGEP(builder,pointer, new PointerPointer<>(ite), 2, ctx.IDENT().getText());
-//                                    LLVMBuildStore(builder, va, pointer_l);
+                                    LLVMValueRef pointer_l = LLVMBuildInBoundsGEP(builder,pointer, new PointerPointer<>(ite), 2, ctx.IDENT().getText());
+                                    LLVMBuildStore(builder, initVa[x], pointer_l);
                                     m++;
                                 }
                             } else if ((int) type == 3) {
@@ -463,31 +463,41 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                                     LLVMValueRef pointer_r = LLVMBuildGEP(builder, initVa2, new PointerPointer<>(ite), 1, ctx.constInitVal().constExp().exp().lVal().getText() + x);
                                     initVa[x] = LLVMBuildLoad(builder, pointer_r, ctx.constInitVal().constExp().exp().lVal().getText() + x);
 
-//                                    LLVMValueRef pointer_l = LLVMBuildInBoundsGEP(builder, pointer, new PointerPointer<>(ite), 1, ctx.IDENT().getText());
-//                                    LLVMBuildStore(builder, va, pointer_l);
+                                    LLVMValueRef pointer_l = LLVMBuildInBoundsGEP(builder, pointer, new PointerPointer<>(LLVMConstInt(i32Type,0,0),ite[0]), 2, ctx.IDENT().getText());
+                                    LLVMBuildStore(builder, initVa[x], pointer_l);
                                     m++;
                                 }
                             }
                         }
                     }
                 } else {
+                    LLVMValueRef[] ite = new LLVMValueRef[2];
+                    ite[0] = LLVMConstInt(i32Type,0,0);
                     for (; m < ctx.constInitVal().constInitVal().size(); ++m) {
+                        ite[1] =LLVMConstInt(i32Type,m,0);
                         if (ctx.constInitVal().constInitVal(m).constExp().exp() != null) {
                             initVa[m] = visitExp(ctx.constInitVal().constInitVal(m).constExp().exp());
                         }
+
+                        LLVMValueRef pointer_l = LLVMBuildInBoundsGEP(builder, pointer, new PointerPointer<>(ite), 2, ctx.IDENT().getText());
+                        LLVMBuildStore(builder, initVa[m], pointer_l);
                     }
                 }
             }
 
             if(m!=len) {
+                LLVMValueRef[] ite = new LLVMValueRef[2];
+                ite[0] = LLVMConstInt(i32Type,0,0);
                 for (; m < len; ++m) {
                     initVa[m] = LLVMConstInt(i32Type, 0, 0);
+                    ite[1]=LLVMConstInt(i32Type,m,0);
+
+                    LLVMValueRef pointer_l = LLVMBuildInBoundsGEP(builder, pointer, new PointerPointer<>(ite), 2, ctx.IDENT().getText());
+                    LLVMBuildStore(builder, initVa[m], pointer_l);
                 }
                 // 创建全局变量并设置类型、名称和初始值
             }
 
-            LLVMValueRef initMe = LLVMConstArray(i32Type,new PointerPointer<>(initVa),len);
-            LLVMSetInitializer(pointer,initMe);
 
         }
         return null;
