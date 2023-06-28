@@ -2,6 +2,7 @@
 import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.PointerPointer;
 import org.bytedeco.llvm.LLVM.*;
+import org.bytedeco.llvm.global.LLVM;
 
 import java.util.*;
 
@@ -25,6 +26,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
     Stack<LLVMBasicBlockRef> con_f_ne = null;
 
     Map<LLVMValueRef,Integer> types=null;
+    List<LLVMValueRef> void_funcs = null;
 
     public SysYLlvmVisitor(){
         llvmSymbolTable=new LLVMSymbolTable();
@@ -48,6 +50,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
         con_true_ne = new Stack<>();
         con_f_ne = new Stack<>();
         types = new HashMap<>();
+        void_funcs = new ArrayList<>();
     }
 
     @Override
@@ -283,6 +286,9 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
         //生成函数，即向之前创建的module中添加函数
         LLVMValueRef function = LLVMAddFunction(module, /*functionName:String*/ctx.IDENT().getText(), ft);
         llvmSymbolTable.addEntry(ctx.IDENT().getText(),function,0);
+        if(ctx.funcType().VOID()!=null){
+            void_funcs.add(function);
+        }
 
         func_now = function;
 
@@ -654,6 +660,7 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
         }else if(ctx.CONTINUE()!=null){
             LLVMBuildBr(builder,con.pop());
         }else if(ctx.exp()!=null){
+
             visitExp(ctx.exp());
         }
         return null;
@@ -757,27 +764,32 @@ public class SysYLlvmVisitor extends SysYParserBaseVisitor<LLVMValueRef> {
                     result = LLVMBuildCall(builder,func,(PointerPointer) null,0,"call"+ctx.IDENT().getText());
                 }else {
                     LLVMValueRef[] args = new LLVMValueRef[ctx.funcRParams().param().size()];
-                    for(int i=0;i<ctx.funcRParams().param().size();++i){
-                        args[i]=visitParam(ctx.funcRParams().param(i));
+                    for (int i = 0; i < ctx.funcRParams().param().size(); ++i) {
+                        args[i] = visitParam(ctx.funcRParams().param(i));
                         Object type = types.get(args[i]);
-                        if (type!=null) {
+                        if (type != null) {
                             if ((int) type == 2) {
                                 PointerPointer<LLVMValueRef> indexPointer = new PointerPointer<>(
                                         LLVMConstInt(i32Type, 0, 0),
                                         LLVMConstInt(i32Type, 0, 0)
                                 );
                                 args[i] = LLVMBuildInBoundsGEP(builder, args[i], indexPointer, 2, "arrayPtr");
-                            }
-                            else if((int)type==3){
+                            } else if ((int) type == 3) {
                                 LLVMValueRef ref2 = LLVMBuildLoad(builder, args[i], "loadArrPtr");
                                 PointerPointer<LLVMValueRef> indexArray = new PointerPointer<>(1);
-                                indexArray.put(LLVMConstInt(i32Type,0,0));
-                                LLVMValueRef elePoint = LLVMBuildGEP(builder,ref2 , indexArray, 1, "elementPoint");
+                                indexArray.put(LLVMConstInt(i32Type, 0, 0));
+                                LLVMValueRef elePoint = LLVMBuildGEP(builder, ref2, indexArray, 1, "elementPoint");
                                 args[i] = elePoint;
                             }
                         }
                     }
-                    result = LLVMBuildCall(builder,func,new PointerPointer<>(args),ctx.funcRParams().param().size(),"call"+ctx.IDENT().getText());
+                    boolean is_void = false;
+                    is_void = void_funcs.contains(func);
+                    if (is_void) {
+                        result = LLVMBuildCall(builder, func, new PointerPointer<>(args), ctx.funcRParams().param().size(), "");
+                    } else {
+                        result = LLVMBuildCall(builder, func, new PointerPointer<>(args), ctx.funcRParams().param().size(), "call" + ctx.IDENT().getText());
+                    }
                 }
 
                 return result;
