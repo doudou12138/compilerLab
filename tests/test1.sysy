@@ -2,8 +2,7 @@ const int sort_arr[5]={1,2};
 
 int main() {
     const int a[2] = { 1,5 };
-    const int b[3] = { 1,4,14 };
-    int n = sort_arr[1];
+    int n = sort_arr[1]*a[0];
     int m[5]=sort_arr;
     return 1;
 }
