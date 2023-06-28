@@ -1,8 +1,10 @@
-const int sort_arr[5]={1,2};
+int sort_arr[5];
+int combine(int arr1[], int arr1_length, int arr2[], int arr2_length) {
+    arr1[1]=3;
+}
 
 int main() {
-    const int a[2] = { 1,5 };
-    int n = sort_arr[1]*a[0];
-    int m[5]=sort_arr;
-    return 1;
+    int a[2] = { 1,5 };
+    int b[3] = { 1,4,14 };
+    return combine(a, 2, b, 3);
 }
