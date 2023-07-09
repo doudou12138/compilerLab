@@ -7,8 +7,12 @@
 /src/*ParserBaseVisitor.java
 /src/*ParserListener.java
 /src/*ParserVisitor.java
+/src/SysYLexer.java
+/src/SysYLexer.interp
+/src/SysYLexer.tokens
 /classes
 .DS_Store
 /out
 /.idea
 /Lab.iml
+/out

@@ -1,0 +1,220 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00007f391e02c882, pid=27526, tid=27527
+#
+# JRE version: OpenJDK Runtime Environment (11.0.19+7) (build 11.0.19+7-post-Ubuntu-0ubuntu122.04.1)
+# Java VM: OpenJDK 64-Bit Server VM (11.0.19+7-post-Ubuntu-0ubuntu122.04.1, mixed mode, sharing, tiered, compressed oops, g1 gc, linux-amd64)
+# Problematic frame:
+# C  [libLLVM-13.so+0xc2c882]  LLVMBuildLoad+0x12
+#
+# Core dump will be written. Default location: Core dumps may be processed with "/usr/share/apport/apport -p%p -s%s -c%c -d%d -P%P -u%u -g%g -- %E" (or dumping to /home/doudou/lab/Lab/core.27526)
+#
+# If you would like to submit a bug report, please visit:
+#   https://bugs.launchpad.net/ubuntu/+source/openjdk-lts
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: -agentlib:jdwp=transport=dt_socket,address=127.0.0.1:42935,suspend=y,server=n -javaagent:/snap/intellij-idea-ultimate/437/plugins/java/lib/rt/debugger-agent.jar -Dfile.encoding=UTF-8 Main /home/doudou/lab/Lab/tests/test1.sysy /home/doudou/lab/Lab/tests/out.txt
+
+Host: 11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz, 2 cores, 3G, Ubuntu 22.04.2 LTS
+Time: Wed Jun 28 13:08:51 2023 CST elapsed time: 642.551542 seconds (0d 0h 10m 42s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007f397c019800):  JavaThread "main" [_thread_in_native, id=27527, stack(0x00007f3980700000,0x00007f3980800000)]
+
+Stack: [0x00007f3980700000,0x00007f3980800000],  sp=0x00007f39807fda20,  free space=1014k
+Native frames: (J=compiled Java code, A=aot compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [libLLVM-13.so+0xc2c882]  LLVMBuildLoad+0x12
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  org.bytedeco.llvm.global.LLVM.LLVMBuildLoad(Lorg/bytedeco/llvm/LLVM/LLVMBuilderRef;Lorg/bytedeco/llvm/LLVM/LLVMValueRef;Ljava/lang/String;)Lorg/bytedeco/llvm/LLVM/LLVMValueRef;+0
+j  SysYLlvmVisitor.visitExp(LSysYParser$ExpContext;)Lorg/bytedeco/llvm/LLVM/LLVMValueRef;+70
+j  SysYLlvmVisitor.visitExp(LSysYParser$ExpContext;)Lorg/bytedeco/llvm/LLVM/LLVMValueRef;+518
+j  SysYLlvmVisitor.visitInitVal(LSysYParser$InitValContext;)Lorg/bytedeco/llvm/LLVM/LLVMValueRef;+19
+j  SysYLlvmVisitor.visitVarDef(LSysYParser$VarDefContext;)Lorg/bytedeco/llvm/LLVM/LLVMValueRef;+73
+j  SysYLlvmVisitor.visitVarDef(LSysYParser$VarDefContext;)Ljava/lang/Object;+2
+j  SysYParser$VarDefContext.accept(Lorg/antlr/v4/runtime/tree/ParseTreeVisitor;)Ljava/lang/Object;+12
+j  org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visitChildren(Lorg/antlr/v4/runtime/tree/RuleNode;)Ljava/lang/Object;+46
+j  SysYParserBaseVisitor.visitVarDecl(LSysYParser$VarDeclContext;)Ljava/lang/Object;+2
+j  SysYParser$VarDeclContext.accept(Lorg/antlr/v4/runtime/tree/ParseTreeVisitor;)Ljava/lang/Object;+12
+j  org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visitChildren(Lorg/antlr/v4/runtime/tree/RuleNode;)Ljava/lang/Object;+46
+j  SysYParserBaseVisitor.visitDecl(LSysYParser$DeclContext;)Ljava/lang/Object;+2
+j  SysYParser$DeclContext.accept(Lorg/antlr/v4/runtime/tree/ParseTreeVisitor;)Ljava/lang/Object;+12
+j  org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visitChildren(Lorg/antlr/v4/runtime/tree/RuleNode;)Ljava/lang/Object;+46
+j  SysYParserBaseVisitor.visitBlockItem(LSysYParser$BlockItemContext;)Ljava/lang/Object;+2
+j  SysYParser$BlockItemContext.accept(Lorg/antlr/v4/runtime/tree/ParseTreeVisitor;)Ljava/lang/Object;+12
+j  org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visitChildren(Lorg/antlr/v4/runtime/tree/RuleNode;)Ljava/lang/Object;+46
+j  SysYParserBaseVisitor.visitBlock(LSysYParser$BlockContext;)Ljava/lang/Object;+2
+j  SysYParser$BlockContext.accept(Lorg/antlr/v4/runtime/tree/ParseTreeVisitor;)Ljava/lang/Object;+12
+j  org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visit(Lorg/antlr/v4/runtime/tree/ParseTree;)Ljava/lang/Object;+2
+j  SysYLlvmVisitor.visitFuncDef(LSysYParser$FuncDefContext;)Lorg/bytedeco/llvm/LLVM/LLVMValueRef;+552
+j  SysYLlvmVisitor.visitCompUnit(LSysYParser$CompUnitContext;)Lorg/bytedeco/llvm/LLVM/LLVMValueRef;+1876
+j  SysYLlvmVisitor.visitCompUnit(LSysYParser$CompUnitContext;)Ljava/lang/Object;+2
+j  SysYParser$CompUnitContext.accept(Lorg/antlr/v4/runtime/tree/ParseTreeVisitor;)Ljava/lang/Object;+12
+j  org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visitChildren(Lorg/antlr/v4/runtime/tree/RuleNode;)Ljava/lang/Object;+46
+j  SysYParserBaseVisitor.visitProgram(LSysYParser$ProgramContext;)Ljava/lang/Object;+2
+j  SysYParser$ProgramContext.accept(Lorg/antlr/v4/runtime/tree/ParseTreeVisitor;)Ljava/lang/Object;+12
+j  org.antlr.v4.runtime.tree.AbstractParseTreeVisitor.visit(Lorg/antlr/v4/runtime/tree/ParseTree;)Ljava/lang/Object;+2
+j  Main.main([Ljava/lang/String;)V+210
+v  ~StubRoutines::call_stub
+
+siginfo: si_signo: 11 (SIGSEGV), si_code: 1 (SEGV_MAPERR), si_addr: 0x0000000000000000
+
+Register to memory mapping:
+
+RAX=0x00007f3924009d40 points into unknown readable memory: 0x000055a6701f0061 | 61 00 1f 70 a6 55 00 00
+RBX=0x0 is NULL
+RCX=0x00007f397c019861 points into unknown readable memory: af a8 81 39 7f 00 00
+RDX=0x00007f3924009d40 points into unknown readable memory: 0x000055a6701f0061 | 61 00 1f 70 a6 55 00 00
+RSP=0x00007f39807fda20 is pointing into the stack for thread: 0x00007f397c019800
+RBP=0x00007f397c40cb40 points into unknown readable memory: 0x00007f397c40cb50 | 50 cb 40 7c 39 7f 00 00
+RSI=0x0 is NULL
+RDI=0x00007f397c40cb40 points into unknown readable memory: 0x00007f397c40cb50 | 50 cb 40 7c 39 7f 00 00
+R8 =0x00000000c6366f78 points into unknown readable memory: 0x0000000000000061 | 61 00 00 00 00 00 00 00
+R9 =0x0000000000000002 is an unknown value
+R10=0x00000000000003d8 is an unknown value
+R11=0x0 is NULL
+R12=0x0 is NULL
+R13=0x0 is NULL
+R14=0x00007f3924009d40 points into unknown readable memory: 0x000055a6701f0061 | 61 00 1f 70 a6 55 00 00
+R15=0x00007f397c019800 is a thread
+
+
+Registers:
+RAX=0x00007f3924009d40, RBX=0x0000000000000000, RCX=0x00007f397c019861, RDX=0x00007f3924009d40
+RSP=0x00007f39807fda20, RBP=0x00007f397c40cb40, RSI=0x0000000000000000, RDI=0x00007f397c40cb40
+R8 =0x00000000c6366f78, R9 =0x0000000000000002, R10=0x00000000000003d8, R11=0x0000000000000000
+R12=0x0000000000000000, R13=0x0000000000000000, R14=0x00007f3924009d40, R15=0x00007f397c019800
+RIP=0x00007f391e02c882, EFLAGS=0x0000000000010202, CSGSFS=0x002b000000000033, ERR=0x0000000000000004
+  TRAPNO=0x000000000000000e
+
+Top of Stack: (sp=0x00007f39807fda20)
+0x00007f39807fda20:   00007f397c019800 0000000000000000
+0x00007f39807fda30:   00007f397c019800 00007f397c122470
+0x00007f39807fda40:   0000000000000002 0000000000000001
+0x00007f39807fda50:   00007f3924009d40 00007f397c122470 
+
+Instructions: (pc=0x00007f391e02c882)
+0x00007f391e02c782:   89 c4 4c 8d 4c 24 40 e8 92 57 09 00 48 8b 7d 50
+0x00007f391e02c792:   48 8b 4d 30 4c 89 e6 48 8d 54 24 10 4c 8b 45 38
+0x00007f391e02c7a2:   48 8b 07 ff 50 10 48 8b 5d 00 8b 6d 08 5a 59 48
+0x00007f391e02c7b2:   c1 e5 04 48 01 dd 48 39 eb 74 1a 0f 1f 00 48 8b
+0x00007f391e02c7c2:   53 08 8b 33 4c 89 e7 48 83 c3 10 e8 6e 16 0e 00
+0x00007f391e02c7d2:   48 39 dd 75 e9 48 83 c4 68 4c 89 e0 5b 5d 41 5c
+0x00007f391e02c7e2:   41 5d 41 5e 41 5f c3 0f 1f 80 00 00 00 00 41 54
+0x00007f391e02c7f2:   b8 01 01 00 00 55 48 89 fd 48 89 f7 53 48 83 ec
+0x00007f391e02c802:   30 48 8b 75 30 66 89 44 24 20 e8 ef 24 09 00 48
+0x00007f391e02c812:   8b 7d 50 48 8b 4d 30 48 89 e2 49 89 c4 4c 8b 45
+0x00007f391e02c822:   38 48 8b 07 4c 89 e6 ff 50 10 48 8b 5d 00 8b 6d
+0x00007f391e02c832:   08 48 c1 e5 04 48 01 dd 48 39 eb 74 18 90 48 8b
+0x00007f391e02c842:   53 08 8b 33 4c 89 e7 48 83 c3 10 e8 ee 15 0e 00
+0x00007f391e02c852:   48 39 dd 75 e9 48 83 c4 30 4c 89 e0 5b 5d 41 5c
+0x00007f391e02c862:   c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 41 56
+0x00007f391e02c872:   41 55 49 89 f5 41 54 55 48 89 fd 53 48 83 ec 60
+0x00007f391e02c882:   48 8b 06 80 3a 00 be 01 01 00 00 4c 8b 70 18 66
+0x00007f391e02c892:   89 74 24 20 74 09 48 89 14 24 c6 44 24 20 03 48
+0x00007f391e02c8a2:   8b 7d 30 e8 d6 15 fc ff 48 89 c7 e8 4e 47 0e 00
+0x00007f391e02c8b2:   4c 89 f6 48 89 c7 e8 b3 46 01 00 be 01 00 00 00
+0x00007f391e02c8c2:   bf 40 00 00 00 89 c3 b8 01 01 00 00 66 89 44 24
+0x00007f391e02c8d2:   50 e8 a8 0a 13 00 48 8d 4c 24 30 41 89 d9 45 31
+0x00007f391e02c8e2:   c0 48 83 ec 08 48 89 c7 4c 89 ea 4c 89 f6 6a 00
+0x00007f391e02c8f2:   49 89 c4 e8 26 5d 09 00 48 8b 7d 50 48 8b 4d 30
+0x00007f391e02c902:   4c 89 e6 48 8d 54 24 10 4c 8b 45 38 48 8b 07 ff
+0x00007f391e02c912:   50 10 48 8b 5d 00 8b 6d 08 5a 59 48 c1 e5 04 48
+0x00007f391e02c922:   01 dd 48 39 eb 74 1e 0f 1f 80 00 00 00 00 48 8b
+0x00007f391e02c932:   53 08 8b 33 4c 89 e7 48 83 c3 10 e8 fe 14 0e 00
+0x00007f391e02c942:   48 39 dd 75 e9 48 83 c4 60 4c 89 e0 5b 5d 41 5c
+0x00007f391e02c952:   41 5d 41 5e c3 66 0f 1f 84 00 00 00 00 00 41 56
+0x00007f391e02c962:   49 89 d6 41 55 49 89 f5 be 01 01 00 00 41 54 55
+0x00007f391e02c972:   48 89 fd 53 48 83 ec 60 80 39 00 66 89 74 24 20 
+
+
+Stack slot to memory mapping:
+stack at sp + 0 slots: 0x00007f397c019800 is a thread
+stack at sp + 1 slots: 0x0 is NULL
+stack at sp + 2 slots: 0x00007f397c019800 is a thread
+stack at sp + 3 slots: 0x00007f397c122470 points into unknown readable memory: 0x00000000c6366f68 | 68 6f 36 c6 00 00 00 00
+stack at sp + 4 slots: 0x0000000000000002 is an unknown value
+stack at sp + 5 slots: 0x0000000000000001 is an unknown value
+stack at sp + 6 slots: 0x00007f3924009d40 points into unknown readable memory: 0x000055a6701f0061 | 61 00 1f 70 a6 55 00 00
+stack at sp + 7 slots: 0x00007f397c122470 points into unknown readable memory: 0x00000000c6366f68 | 68 6f 36 c6 00 00 00 00
+
+
+---------------  P R O C E S S  ---------------
+
+Threads class SMR info:
+_java_thread_list=0x00007f3924008e90, length=11, elements={
+0x00007f397c019800, 0x00007f397c124000, 0x00007f397c126000, 0x00007f397c12a800,
+0x00007f397c12c800, 0x00007f397c12e800, 0x00007f397c130800, 0x00007f397c132800,
+0x00007f397c140800, 0x00007f397c1a6000, 0x00007f397c229800
+}
+
+Java Threads: ( => current thread )
+=>0x00007f397c019800 JavaThread "main" [_thread_in_native, id=27527, stack(0x00007f3980700000,0x00007f3980800000)]
+  0x00007f397c124000 JavaThread "Reference Handler" daemon [_thread_blocked, id=27540, stack(0x00007f39603a9000,0x00007f39604a9000)]
+  0x00007f397c126000 JavaThread "Finalizer" daemon [_thread_blocked, id=27541, stack(0x00007f39602a9000,0x00007f39603a9000)]
+  0x00007f397c12a800 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=27542, stack(0x00007f39601a9000,0x00007f39602a9000)]
+  0x00007f397c12c800 JavaThread "Service Thread" daemon [_thread_blocked, id=27543, stack(0x00007f39600a9000,0x00007f39601a9000)]
+  0x00007f397c12e800 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, id=27545, stack(0x00007f3951f00000,0x00007f3952000000)]
+  0x00007f397c130800 JavaThread "C1 CompilerThread0" daemon [_thread_blocked, id=27546, stack(0x00007f3951e00000,0x00007f3951f00000)]
+  0x00007f397c132800 JavaThread "Sweeper thread" daemon [_thread_blocked, id=27547, stack(0x00007f3951d00000,0x00007f3951e00000)]
+  0x00007f397c140800 JavaThread "Common-Cleaner" daemon [_thread_blocked, id=27549, stack(0x00007f3951c00000,0x00007f3951d00000)]
+  0x00007f397c1a6000 JavaThread "JDWP Event Helper Thread" daemon [_thread_blocked, id=27553, stack(0x00007f3951a00000,0x00007f3951b00000)]
+  0x00007f397c229800 JavaThread "JavaCPP Deallocator" daemon [_thread_blocked, id=27565, stack(0x00007f39516fe000,0x00007f39517fe000)]
+
+Other Threads:
+  0x00007f397c121000 VMThread "VM Thread" [stack: 0x00007f39604ab000,0x00007f39605ab000] [id=27539]
+  0x00007f397c1b7000 WatcherThread [stack: 0x00007f3951800000,0x00007f3951900000] [id=27564]
+  0x00007f397c033800 GCTaskThread "GC Thread#0" [stack: 0x00007f398012a000,0x00007f398022a000] [id=27529]
+  0x00007f3948001000 GCTaskThread "GC Thread#1" [stack: 0x00007f39515fe000,0x00007f39516fe000] [id=27566]
+  0x00007f397c04e800 ConcurrentGCThread "G1 Main Marker" [stack: 0x00007f39612b5000,0x00007f39613b5000] [id=27530]
+  0x00007f397c050800 ConcurrentGCThread "G1 Conc#0" [stack: 0x00007f39611b3000,0x00007f39612b3000] [id=27531]
+  0x00007f397c08b800 ConcurrentGCThread "G1 Refine#0" [stack: 0x00007f3960eaf000,0x00007f3960faf000] [id=27534]
+  0x00007f397c08d800 ConcurrentGCThread "G1 Young RemSet Sampling" [stack: 0x00007f3960dad000,0x00007f3960ead000] [id=27538]
+
+Threads with active compile tasks:
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap address: 0x00000000c2e00000, size: 978 MB, Compressed Oops mode: 32-bit
+Narrow klass base: 0x0000000800000000, Narrow klass shift: 3
+Compressed class space size: 1073741824 Address: 0x0000000840000000
+
+Heap:
+ garbage-first heap   total 65536K, used 8900K [0x00000000c2e00000, 0x0000000100000000)
+  region size 1024K, 9 young (9216K), 1 survivors (1024K)
+ Metaspace       used 3944K, capacity 6617K, committed 6912K, reserved 1056768K
+  class space    used 423K, capacity 694K, committed 768K, reserved 1048576K
+Heap Regions: E=young(eden), S=young(survivor), O=old, HS=humongous(starts), HC=humongous(continues), CS=collection set, F=free, A=archive, TAMS=top-at-mark-start (previous, next)
+|   0|0x00000000c2e00000, 0x00000000c2e00000, 0x00000000c2f00000|  0%| F|  |TAMS 0x00000000c2e00000, 0x00000000c2e00000| Untracked 
+|   1|0x00000000c2f00000, 0x00000000c2f00000, 0x00000000c3000000|  0%| F|  |TAMS 0x00000000c2f00000, 0x00000000c2f00000| Untracked 
+|   2|0x00000000c3000000, 0x00000000c3000000, 0x00000000c3100000|  0%| F|  |TAMS 0x00000000c3000000, 0x00000000c3000000| Untracked 
+|   3|0x00000000c3100000, 0x00000000c3100000, 0x00000000c3200000|  0%| F|  |TAMS 0x00000000c3100000, 0x00000000c3100000| Untracked 
+|   4|0x00000000c3200000, 0x00000000c3200000, 0x00000000c3300000|  0%| F|  |TAMS 0x00000000c3200000, 0x00000000c3200000| Untracked 
+|   5|0x00000000c3300000, 0x00000000c3300000, 0x00000000c3400000|  0%| F|  |TAMS 0x00000000c3300000, 0x00000000c3300000| Untracked 
+|   6|0x00000000c3400000, 0x00000000c3400000, 0x00000000c3500000|  0%| F|  |TAMS 0x00000000c3400000, 0x00000000c3400000| Untracked 
+|   7|0x00000000c3500000, 0x00000000c3500000, 0x00000000c3600000|  0%| F|  |TAMS 0x00000000c3500000, 0x00000000c3500000| Untracked 
+|   8|0x00000000c3600000, 0x00000000c3600000, 0x00000000c3700000|  0%| F|  |TAMS 0x00000000c3600000, 0x00000000c3600000| Untracked 
+|   9|0x00000000c3700000, 0x00000000c3700000, 0x00000000c3800000|  0%| F|  |TAMS 0x00000000c3700000, 0x00000000c3700000| Untracked 
+|  10|0x00000000c3800000, 0x00000000c3800000, 0x00000000c3900000|  0%| F|  |TAMS 0x00000000c3800000, 0x00000000c3800000| Untracked 
+|  11|0x00000000c3900000, 0x00000000c3900000, 0x00000000c3a00000|  0%| F|  |TAMS 0x00000000c3900000, 0x00000000c3900000| Untracked 
+|  12|0x00000000c3a00000, 0x00000000c3a00000, 0x00000000c3b00000|  0%| F|  |TAMS 0x00000000c3a00000, 0x00000000c3a00000| Untracked 
+|  13|0x00000000c3b00000, 0x00000000c3b00000, 0x00000000c3c00000|  0%| F|  |TAMS 0x00000000c3b00000, 0x00000000c3b00000| Untracked 
+|  14|0x00000000c3c00000, 0x00000000c3c00000, 0x00000000c3d00000|  0%| F|  |TAMS 0x00000000c3c00000, 0x00000000c3c00000| Untracked 
+|  15|0x00000000c3d00000, 0x00000000c3d00000, 0x00000000c3e00000|  0%| F|  |TAMS 0x00000000c3d00000, 0x00000000c3d00000| Untracked 
+|  16|0x00000000c3e00000, 0x00000000c3e00000, 0x00000000c3f00000|  0%| F|  |TAMS 0x00000000c3e00000, 0x00000000c3e00000| Untracked 
+|  17|0x00000000c3f00000, 0x00000000c3f00000, 0x00000000c4000000|  0%| F|  |TAMS 0x00000000c3f00000, 0x00000000c3f00000| Untracked 
+|  18|0x00000000c4000000, 0x00000000c4000000, 0x00000000c4100000|  0%| F|  |TAMS 0x00000000c4000000, 0x00000000c4000000| Untracked 
+|  19|0x00000000c4100000, 0x00000000c4100000, 0x00000000c4200000|  0%| F|  |TAMS 0x00000000c4100000, 0x00000000c4100000| Untracked 
+|  20|0x00000000c4200000, 0x00000000c4200000, 0x00000000c4300000|  0%| F|  |TAMS 0x00000000c4200000, 0x00000000c4200000| Untracked 
+|  21|0x00000000c4300000, 0x00000000c4300000, 0x00000000c4400000|  0%| F|  |TAMS 0x00000000c4300000, 0x00000000c4300000| Untracked 
+|  22|0x00000000c4400000, 0x00000000c4400000, 0x00000000c4500000|  0%| F|  |TAMS 0x00000000c4400000, 0x00000000c4400000| Untracked 
+|  23|0x00000000c4500000, 0x00000000c4500000, 0x00000000c4600000|  0%| F|  |TAMS 0x00000000c4500000, 0x00000000c4500000| Untracked 
+|  24|0x00000000c4600000, 0x00000000c4600000, 0x00000000c4700000|  0%

@@ -1,0 +1,100 @@
+; ModuleID = 'moudle'
+source_filename = "moudle"
+
+@arr = global [5 x i32] zeroinitializer
+
+define i32 @func2(i32* %0, i32 %1, i32 %2) {
+func2Entry:
+  %arr1 = alloca i32*, align 8
+  store i32* %0, i32** %arr1, align 8
+  %x = alloca i32, align 4
+  store i32 %1, i32* %x, align 4
+  %y = alloca i32, align 4
+  store i32 %2, i32* %y, align 4
+  %loadArrPtr = load i32*, i32** %arr1, align 8
+  %elementPoint = getelementptr i32, i32* %loadArrPtr, i32 2
+  store i32 0, i32* %elementPoint, align 4
+  %i = alloca i32, align 4
+  store i32 1, i32* %i, align 4
+  %loadArrPtr1 = load i32*, i32** %arr1, align 8
+  %elementPoint2 = getelementptr i32, i32* %loadArrPtr1, i32 0
+  %i3 = load i32, i32* %i, align 4
+  %y4 = load i32, i32* %y, align 4
+  %callfunc2 = call i32 @func2(i32* %elementPoint2, i32 %i3, i32 %y4)
+  %arr = load i32, i32* getelementptr inbounds ([5 x i32], [5 x i32]* @arr, i32 0, i32 1), align 4
+  %loadArrPtr5 = load i32*, i32** %arr1, align 8
+  %elementPoint6 = getelementptr i32, i32* %loadArrPtr5, i32 1
+  %arr17 = load i32, i32* %elementPoint6, align 4
+  %y8 = load i32, i32* %y, align 4
+  %addtmp = add i32 %arr17, %y8
+  %callfunc29 = call i32 @func2(i32* getelementptr inbounds ([5 x i32], [5 x i32]* @arr, i32 0, i32 0), i32 %arr, i32 %addtmp)
+  ret i32 %callfunc29
+  ret i32 0
+}
+
+define void @main(i32* %0, i32 %1) {
+mainEntry:
+  %arr1 = alloca i32*, align 8
+  store i32* %0, i32** %arr1, align 8
+  %arr2 = alloca i32, align 4
+  store i32 %1, i32* %arr2, align 4
+  %loadArrPtr = load i32*, i32** %arr1, align 8
+  %elementPoint = getelementptr i32, i32* %loadArrPtr, i32 0
+  store i32 1, i32* %elementPoint, align 4
+  %b = alloca [3 x i32], align 4
+  %b1 = getelementptr inbounds [3 x i32], [3 x i32]* %b, i32 0, i32 0
+  store i32 1, i32* %b1, align 4
+  %b2 = getelementptr inbounds [3 x i32], [3 x i32]* %b, i32 0, i32 1
+  store i32 4, i32* %b2, align 4
+  %b3 = getelementptr inbounds [3 x i32], [3 x i32]* %b, i32 0, i32 2
+  store i32 14, i32* %b3, align 4
+  %arr24 = load i32, i32* %arr2, align 4
+  %callfunc2 = call i32 @func2(i32 %arr24)
+  ret i32 %callfunc2
+  ret void
+}
+
+define i32 @func() {
+funcEntry:
+  %a = alloca [2 x i32], align 4
+  %a1 = getelementptr inbounds [2 x i32], [2 x i32]* %a, i32 0, i32 0
+  store i32 1, i32* %a1, align 4
+  %a2 = getelementptr inbounds [2 x i32], [2 x i32]* %a, i32 0, i32 1
+  store i32 2, i32* %a2, align 4
+  br label %condition
+
+condition:                                        ; preds = %funcEntry
+  %elePoint = getelementptr inbounds [2 x i32], [2 x i32]* %a, i32 0, i32 0
+  %a3 = load i32, i32* %elePoint, align 4
+  %gt = icmp sgt i32 %a3, 1
+  %cond = zext i1 %gt to i32
+  %cmp = icmp eq i32 %cond, 0
+  br i1 %cmp, label %conl_false, label %conl_true
+  %cond9 = icmp ne i32 0, %chek_32
+  br i1 %cond9, label %the_true, label %the_false
+
+the_true:                                         ; preds = %condition, %conl_true
+  %arrayPtr = getelementptr inbounds [2 x i32], [2 x i32]* %a, i32 0, i32 0
+  %elePoint7 = getelementptr inbounds [2 x i32], [2 x i32]* %a, i32 0, i32 0
+  %a8 = load i32, i32* %elePoint7, align 4
+  call void @main(i32* %arrayPtr, i32 %a8)
+  br label %the_next
+
+the_false:                                        ; preds = %condition, %conl_true, %conl_false
+  br label %the_next
+
+conl_true:                                        ; preds = %condition
+  %elePoint4 = getelementptr inbounds [2 x i32], [2 x i32]* %a, i32 0, i32 1
+  %a5 = load i32, i32* %elePoint4, align 4
+  %lt = icmp slt i32 %a5, 2
+  %cond6 = zext i1 %lt to i32
+  %cmp_2 = icmp eq i32 %cond6, 0
+  %chek_32 = zext i1 %cmp_2 to i32
+  br i1 %cmp_2, label %the_true, label %the_false
+
+conl_false:                                       ; preds = %condition
+  br label %the_false
+
+the_next:                                         ; preds = %the_false, %the_true
+  ret i32 0
+}
